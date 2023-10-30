@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/collegesuvidha/client/static/css/main.b8bb3132.css",
-    "main.js": "/collegesuvidha/client/static/js/main.f04bd089.js",
-    "static/js/787.ca7ea595.chunk.js": "/collegesuvidha/client/static/js/787.ca7ea595.chunk.js",
-    "static/media/map.png": "/collegesuvidha/client/static/media/map.1e0a30fee2153d5e745f.png",
-    "static/media/slider4.jpg": "/collegesuvidha/client/static/media/slider4.8dfcb3ed3f26a1b058b1.jpg",
-    "static/media/pro1.webp": "/collegesuvidha/client/static/media/pro1.33861f151646734e7868.webp",
-    "static/media/product1.jpg": "/collegesuvidha/client/static/media/product1.28ef1ab7ed55ea68b24b.jpg",
-    "static/media/lab-dress-icon.png": "/collegesuvidha/client/static/media/lab-dress-icon.ddba48b0b0a9c2996631.png",
-    "static/media/cycl-icon.png": "/collegesuvidha/client/static/media/cycl-icon.464728524554280b7e0f.png",
-    "static/media/ele-kettle.png": "/collegesuvidha/client/static/media/ele-kettle.b2433be812b4578b4e16.png",
-    "static/media/dumbbell-icon.png": "/collegesuvidha/client/static/media/dumbbell-icon.fa321f394d0b2ea4d5df.png",
-    "static/media/mattress-icon.png": "/collegesuvidha/client/static/media/mattress-icon.4948ef11cb7eb50d6365.png",
-    "static/media/calcu-icon.png": "/collegesuvidha/client/static/media/calcu-icon.96cc468d1c2c039aec45.png",
-    "static/media/cooler-icon.png": "/collegesuvidha/client/static/media/cooler-icon.aa613684043c838760a8.png",
-    "index.html": "/collegesuvidha/client/index.html",
-    "main.b8bb3132.css.map": "/collegesuvidha/client/static/css/main.b8bb3132.css.map",
-    "main.f04bd089.js.map": "/collegesuvidha/client/static/js/main.f04bd089.js.map",
-    "787.ca7ea595.chunk.js.map": "/collegesuvidha/client/static/js/787.ca7ea595.chunk.js.map"
+    "main.css": "/collegesuvidha/static/css/main.b8bb3132.css",
+    "main.js": "/collegesuvidha/static/js/main.d13f053a.js",
+    "static/js/787.ca7ea595.chunk.js": "/collegesuvidha/static/js/787.ca7ea595.chunk.js",
+    "static/media/map.png": "/collegesuvidha/static/media/map.1e0a30fee2153d5e745f.png",
+    "static/media/slider4.jpg": "/collegesuvidha/static/media/slider4.8dfcb3ed3f26a1b058b1.jpg",
+    "static/media/pro1.webp": "/collegesuvidha/static/media/pro1.33861f151646734e7868.webp",
+    "static/media/product1.jpg": "/collegesuvidha/static/media/product1.28ef1ab7ed55ea68b24b.jpg",
+    "static/media/lab-dress-icon.png": "/collegesuvidha/static/media/lab-dress-icon.ddba48b0b0a9c2996631.png",
+    "static/media/cycl-icon.png": "/collegesuvidha/static/media/cycl-icon.464728524554280b7e0f.png",
+    "static/media/ele-kettle.png": "/collegesuvidha/static/media/ele-kettle.b2433be812b4578b4e16.png",
+    "static/media/dumbbell-icon.png": "/collegesuvidha/static/media/dumbbell-icon.fa321f394d0b2ea4d5df.png",
+    "static/media/mattress-icon.png": "/collegesuvidha/static/media/mattress-icon.4948ef11cb7eb50d6365.png",
+    "static/media/calcu-icon.png": "/collegesuvidha/static/media/calcu-icon.96cc468d1c2c039aec45.png",
+    "static/media/cooler-icon.png": "/collegesuvidha/static/media/cooler-icon.aa613684043c838760a8.png",
+    "index.html": "/collegesuvidha/index.html",
+    "main.b8bb3132.css.map": "/collegesuvidha/static/css/main.b8bb3132.css.map",
+    "main.d13f053a.js.map": "/collegesuvidha/static/js/main.d13f053a.js.map",
+    "787.ca7ea595.chunk.js.map": "/collegesuvidha/static/js/787.ca7ea595.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.b8bb3132.css",
-    "static/js/main.f04bd089.js"
+    "static/js/main.d13f053a.js"
   ]
 }
