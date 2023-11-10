@@ -1,5 +1,4 @@
 import React from "react";
-
 function MapExample() {
   const mapRef = React.useRef(null);
   React.useEffect(() => {
@@ -67,8 +66,8 @@ function MapExample() {
     });
 
     const contentString =
-      '<div class="info-window-content"><h2>Notus NextJS</h2>' +
-      "<p>A free Admin for Tailwind CSS, React, React Hooks, and NextJS.</p></div>";
+      '<div class="info-window-content"><h2>CollegeSuvidha </h2>' +
+      "<p>Sell and Buy the essentials </p></div>";
 
     const infowindow = new google.maps.InfoWindow({
       content: contentString,

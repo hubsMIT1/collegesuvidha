@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function ProductForm() {
   const [productData, setProductData] = useState({
-    title: '',
-    description: '',
-    category: '',
-    price: '',
-    quantity: '',
-    address: '',
-    zipCode: '',
+    title: "",
+    description: "",
+    category: "",
+    price: "",
+    quantity: "",
+    address: "",
+    zipCode: "",
     images: [],
   });
 
@@ -24,13 +24,15 @@ function ProductForm() {
 
   const handleImageUpload = (e) => {
     const selectedImages = Array.from(e.target.files);
-    setProductData((prevData) => ({ ...prevData, images: [...prevData.images, ...selectedImages] }));
-    console.log(e)
+    setProductData((prevData) => ({
+      ...prevData,
+      images: [...prevData.images, ...selectedImages],
+    }));
+    console.log(e);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission here, e.g., send data to server
     console.log(productData);
   };
 
@@ -38,13 +40,17 @@ function ProductForm() {
     <div className="flex flex-col xl:p-10 font-sans-serif items-center justify-center max-w-[1500px] m-auto">
       <div className="relative h-auto bg-white rounded-lg shadow-lg w-4/5">
         <div className=" border-b-2 text-center">
-          <h1 className="text-3xl m-4 font-bold text-cs-textHdClr">Add New Product</h1>
+          <h1 className="text-3xl m-4 font-bold text-cs-textHdClr">
+            Add New Product
+          </h1>
         </div>
         <div className="relative p-4">
           <form className="relative" onSubmit={handleSubmit}>
-            {/* ... Previous input fields ... */}
             <div className="mb-4 pt-0 flex flex-col">
-              <label className="mb-2 text-gray-800 text-lg font-light" htmlFor="title">
+              <label
+                className="mb-2 text-gray-800 text-lg font-light"
+                htmlFor="title"
+              >
                 Product Title
               </label>
               <input
@@ -60,7 +66,10 @@ function ProductForm() {
             </div>
 
             <div className="mb-4 pt-0 flex flex-col">
-              <label className="mb-2 text-gray-800 text-lg font-light" htmlFor="description">
+              <label
+                className="mb-2 text-gray-800 text-lg font-light"
+                htmlFor="description"
+              >
                 Description
               </label>
               <textarea
@@ -75,7 +84,10 @@ function ProductForm() {
             </div>
 
             <div className="mb-4 pt-0 flex flex-col">
-              <label className="mb-2 text-gray-800 text-lg font-light" htmlFor="category">
+              <label
+                className="mb-2 text-gray-800 text-lg font-light"
+                htmlFor="category"
+              >
                 Category
               </label>
               <select
@@ -84,7 +96,6 @@ function ProductForm() {
                 value={productData.category}
                 onChange={handleCategoryChange}
                 className="block w-full px-4 py-2 mt-2 text-cs-textHdClr bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40"
-
                 autoComplete="off"
                 required
               >
@@ -93,14 +104,16 @@ function ProductForm() {
                 <option value="mattress">Mattress</option>
                 <option value="kattle">Kattle</option>
 
-                
                 {/* Add more category options */}
               </select>
             </div>
             {/* Price */}
             <div className="mb-4 pt-0 flex flex-col">
-              <label className="mb-2 text-gray-800 text-lg font-light" htmlFor="price">
-               Price
+              <label
+                className="mb-2 text-gray-800 text-lg font-light"
+                htmlFor="price"
+              >
+                Price
               </label>
               <input
                 type="number"
@@ -109,7 +122,6 @@ function ProductForm() {
                 value={productData.price}
                 onChange={handleInputChange}
                 className="block w-full px-4 py-2 mt-2 text-cs-textHdClr bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40"
-
                 autoComplete="off"
                 required
               />
@@ -117,7 +129,10 @@ function ProductForm() {
 
             {/* Quantity */}
             <div className="mb-4 pt-0 flex flex-col">
-              <label className="mb-2 text-gray-800 text-lg font-light" htmlFor="quantity">
+              <label
+                className="mb-2 text-gray-800 text-lg font-light"
+                htmlFor="quantity"
+              >
                 Quantity
               </label>
               <input
@@ -127,7 +142,6 @@ function ProductForm() {
                 value={productData.quantity}
                 onChange={handleInputChange}
                 className="block w-full px-4 py-2 mt-2 text-cs-textHdClr bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40"
-
                 autoComplete="off"
                 required
               />
@@ -135,8 +149,11 @@ function ProductForm() {
 
             {/* Address */}
             <div className="mb-4 pt-0 flex flex-col">
-              <label className="mb-2 text-gray-800 text-lg font-light" htmlFor="address">
-               Address
+              <label
+                className="mb-2 text-gray-800 text-lg font-light"
+                htmlFor="address"
+              >
+                Address
               </label>
               <input
                 type="text"
@@ -145,7 +162,6 @@ function ProductForm() {
                 value={productData.address}
                 onChange={handleInputChange}
                 className="block w-full px-4 py-2 mt-2 text-cs-textHdClr bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40"
-
                 autoComplete="off"
                 required
               />
@@ -153,7 +169,10 @@ function ProductForm() {
 
             {/* Zip Code */}
             <div className="mb-4 pt-0 flex flex-col">
-              <label className="mb-2 text-gray-800 text-lg font-light" htmlFor="zipCode">
+              <label
+                className="mb-2 text-gray-800 text-lg font-light"
+                htmlFor="zipCode"
+              >
                 Zip Code
               </label>
               <input
@@ -163,13 +182,15 @@ function ProductForm() {
                 value={productData.zipCode}
                 onChange={handleInputChange}
                 className="block w-full px-4 py-2 mt-2 text-cs-textHdClr bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40"
-
                 autoComplete="off"
                 required
               />
             </div>
             <div className="mb-4 pt-0 flex flex-col">
-              <label className="mb-2 text-gray-800 text-lg font-light" htmlFor="images">
+              <label
+                className="mb-2 text-gray-800 text-lg font-light"
+                htmlFor="images"
+              >
                 Product Images
               </label>
               <input
@@ -188,8 +209,7 @@ function ProductForm() {
               </label>
               <p className="py-2 text-cs-textHdClr">Upload png or jpg only </p>
             </div>
-            {/* ... Other fields ... */}
-            
+
             <div className="rel pt-0 flex flex-col p-4 w-full">
               <input
                 type="submit"

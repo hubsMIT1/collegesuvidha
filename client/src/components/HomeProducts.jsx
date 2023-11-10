@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+// import { Link, useParams } from 'react-router-dom';
 import { callApi } from '../utils/CallApi';
 import ProductList from './ProductList';
-import { Button } from '@material-tailwind/react';
 
 function HomePageProducts() {
-    const { seller_id } = useParams();
+    // const { seller_id } = useParams();
     const [products, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true); // Initialize loading to true
+    const [loading, setLoading] = useState(true);
     const [err, setError] = useState(null);
 
     const getProduct = async () => {
@@ -21,14 +20,13 @@ function HomePageProducts() {
         } catch (err) {
             setError(err);
         } finally {
-            setLoading(false); // Set loading to false when the response is received
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         getProduct();
-    }, []); // Run this effect only once when the component mounts
-
+    }, []);
     return (
         <div>
             <div className="flex justify-center  mb-5">
@@ -42,8 +40,8 @@ function HomePageProducts() {
             ) : (
                 <ProductList filteredProductList={products} loading={loading} pagi={false} viewBtn={true} />
             )}
-            
-           
+
+
         </div>
     );
 }
