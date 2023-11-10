@@ -1,1 +1,3 @@
-
+- deploy on vercel, 
+- from next push make branch for each
+- test then ci yaml file - github action 
