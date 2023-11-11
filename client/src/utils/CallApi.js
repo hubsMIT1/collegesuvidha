@@ -1,56 +1,51 @@
-import axios from 'axios'
-import { BASE_URL } from './constants';
+import axios from "axios";
+import { BASE_URL } from "./constants";
 
 const config = {
-    headers:{
-        "Content-Type":"application/json",
-        Accept: "application/json"
-    }
-}
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+};
 
 export const callApi = async (resource, options = {}) => {
-    try {
-        const defaultOptions = {
-            params: {
-                limit: 18,
-            },
-        };
+  try {
+    const defaultOptions = {
+      params: {
+        limit: 18,
+      },
+    };
 
-        // Merge the default options with custom options
-        const mergedOptions = { ...defaultOptions, ...options };
-        
-        // Create the query parameter string
-        const queryParams = new URLSearchParams(mergedOptions.params).toString();
+    // Merge the default options with custom options
+    const mergedOptions = { ...defaultOptions, ...options };
 
-        console.log(queryParams)
-        if (Array.isArray(mergedOptions.params.category)) {
-            mergedOptions.params.category.forEach(category => {
-                queryParams += `&category=${category}`;
-            });
-        }
-        if (mergedOptions.params.skip) {
-            queryParams += `&skip=${mergedOptions.params.skip}`;
-        }
-        if(mergedOptions.params.sorting){
-            queryParams += `&sorting=${mergedOptions.params.sorting}`;
-        }
-        // Construct the full URL with query parameters
-        const apiUrl = `${BASE_URL}/${resource}?${queryParams}`;
+    // Create the query parameter string
+    let queryParams = new URLSearchParams(mergedOptions.params).toString();
 
-        const response = await axios.get(apiUrl, config);
-
-        if (response.status !== 200){
-            throw new Error(`HTTP Error: ${response.status}`);
-        }
-
-        const { data } = response;
-        // console.log(data)
-        // if (!data.ok) {
-        //     throw new Error("There is some error, check your internet connection");
-        // }
-
-        return data;
-    } catch (err) {
-        throw err;
+    console.log(queryParams);
+    if (Array.isArray(mergedOptions.params.category)) {
+      mergedOptions.params.category.forEach((category) => {
+        queryParams += `&category=${category}`;
+      });
     }
+    if (mergedOptions.params.skip) {
+      queryParams += `&skip=${mergedOptions.params.skip}`;
+    }
+    if (mergedOptions.params.sorting) {
+      queryParams += `&sorting=${mergedOptions.params.sorting}`;
+    }
+    // Construct the full URL with query parameters
+    const apiUrl = `${BASE_URL}/${resource}?${queryParams}`;
+
+    const response = await axios.get(apiUrl, config);
+
+    if (response.status !== 200) {
+      throw new Error(`HTTP Error: ${response.status}`);
+    }
+
+    const { data } = response;
+    return data;
+  } catch (err) {
+    throw err;
+  }
 };

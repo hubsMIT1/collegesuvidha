@@ -14,13 +14,14 @@ const validate = (values) => {
   }
 
   /* validating last name */
-  if (!values.lastName) {
-    errors.lastName = "Last name is required";
-  } else if (values.lastName.length < 1) {
-    errors.lastName = "Invalid Last name";
-  } else {
-    errors.lastName = "Awesome last name 😁";
-  }
+  // if (!values.lastName) {
+  //   errors.lastName = "Last name is required";
+  // } else 
+  // if (values.lastName.length < 1) {
+  //   errors.lastName = "Invalid Last name";
+  // } else {
+  //   errors.lastName = "Awesome last name 😁";
+  // }
 
   /* validating email using regex to pass email */
   if (!values.email) {

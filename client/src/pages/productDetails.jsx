@@ -185,7 +185,7 @@ function ProductDetails(props) {
                     className=" object-cover items-center cursor-pointer"
                   />
                 </Link>
-                <MapExample />
+                {/* <MapExample /> */}
               </div>
             </div>
           </div>
