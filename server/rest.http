@@ -1,0 +1,23 @@
+GET http://localhost:3001
+
+###
+POST http://localhost:3001/auth/login
+
+###
+POST http://localhost:3001/auth/register
+Content-Type: application/json
+
+{
+    "firstName":"shivay1",
+    "lastName":"y1",
+    "email":"shivay2@gmail.com",
+    "password":"1234",
+    "confirmPassword":"1234"
+}
+
+###
+POST http://localhost:3001/auth/refresh-token 
+
+###
+DELETE http://localhost:3001/auth/logout
+
