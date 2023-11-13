@@ -1,21 +1,64 @@
 import { useFormik } from "formik";
 import * as yup from "yup";
-
-// import Header from "../../components/Header";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useLayoutEffect } from "react";
+import authService from "../../services/auth_service";
+import { setUserData, clearUserData } from "../../redux/userData/userAction";
 
 const ProfileForm = () => {
+  const { userData } = useSelector((state) => state.user);
+  const { isAuthenticated, accessToken, refreshToken,userId } = useSelector(
+    (state) => state.auth
+  );
+
+  const authData = useSelector(
+    (state) => state.auth
+  );
+  console.log(isAuthenticated,refreshToken,userId)
+  const dispatch = useDispatch();
+
+  useLayoutEffect(() => {
+    console.log("api backend userdata")
+    async function fetchUserData() {
+      if (isAuthenticated) {
+        try {
+          const response = await authService.userData(userId, accessToken,refreshToken);
+          console.log(response)
+          if(response.status===200){
+            dispatch(setUserData(response.data))
+            // return ;
+          }
+        } catch (error) {
+          console.log(error.message)
+        }
+      }
+    }
+    fetchUserData();
+  }, [isAuthenticated,accessToken, userId,dispatch, ]);
+  console.log(userData)
+
+  useEffect(() => {
+    formik.setValues({
+      firstName: userData?.firstName || "",
+      lastName: userData?.lastName || "",
+      email: userData?.email || "",
+      contact: userData?.contact || "",
+      address1: userData?.address1 || "",
+      address2: userData?.address2 || "",
+    });
+  }, [userData]);
   const formik = useFormik({
-    initialValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      contact: "",
-      address1: "",
-      address2: "",
-    },
+    initialValues:{
+      firstName: userData?.firstName || "",
+      lastName: userData?.lastName || "",
+      email: userData?.email || "",
+      contact: userData?.contact || "",
+      address1: userData?.address1 || "",
+      address2: userData?.address2 || "",
+    },    
     validationSchema: yup.object().shape({
       firstName: yup.string().required("First name is required"),
-    //   lastName: yup.string().required("Last name is required"),
+      //   lastName: yup.string().required("Last name is required"),
       email: yup.string().email("Invalid email").required("Email is required"),
       contact: yup
         .string()
@@ -25,13 +68,13 @@ const ProfileForm = () => {
         )
         .required("Contact number is required"),
       address1: yup.string().required("Address 1 is required"),
-    //   address2: yup.string().required("Address 2 is required"),
+      //   address2: yup.string().required("Address 2 is required"),
     }),
     onSubmit: (values) => {
       console.log(values);
     },
   });
-
+  // console.log(formik.values,userData?.email)
   return (
     <div className="relative">
       {/* <Header title="CREATE USER" subtitle="Create a New User Profile" /> */}
@@ -134,7 +177,6 @@ const ProfileForm = () => {
             type="submit"
             className="bg-blue-900 hover:bg-secondary-dark text-white font-bold py-2 px-4 rounded flex items-center"
           >
-            
             Update Profiles
           </button>
         </div>

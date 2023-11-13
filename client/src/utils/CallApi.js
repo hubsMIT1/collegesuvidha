@@ -1,14 +1,14 @@
 import axios from "axios";
-import { BASE_URL } from "./constants";
+import { BASE_URL,AUTH_API } from "./constants";
 
 const config = {
   headers: {
     "Content-Type": "application/json",
-    Accept: "application/json",
+   
   },
 };
 
-export const callApi = async (resource, options = {}) => {
+const callApi = async (resource, options = {}) => {
   try {
     const defaultOptions = {
       params: {
@@ -49,3 +49,12 @@ export const callApi = async (resource, options = {}) => {
     throw err;
   }
 };
+
+
+const callAuthApi = axios.create({
+  baseURL: AUTH_API,
+  credentials: 'include',
+});
+
+
+export  {callApi,callAuthApi,config}

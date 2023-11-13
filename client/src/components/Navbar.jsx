@@ -5,9 +5,14 @@ import Search from './Search'
 import { Link } from 'react-router-dom'
 
 import { Avatar } from "@material-tailwind/react";
+import { useDispatch, useSelector } from 'react-redux';
+import { loginSuccess, logout } from '../redux/authAction';
 
 import SideBar from './SideBar'
 function Navbar() {
+    const dispatch = useDispatch();
+    const { isAuthenticated, accessToken, refreshToken } = useSelector((state) => state.auth);
+
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const navHeadings = [
         { name: 'Home', link: '/', type: 'text' },
@@ -72,7 +77,7 @@ function Navbar() {
                 <Link to={`/seller/1`}>Seller</Link>
                 <Link to={`/dashboard/#profile`}>Your Products</Link>
                 <Link to={`/dashboard/#chats`}>Chats</Link>
-                <Link to={`/signup`}>Sign Up</Link>
+                <Link to={`/auth/signup`}>Sign Up</Link>
             </div>
             {mobileFiltersOpen && <SideBar isMobile={mobileFiltersOpen} setIsMobile={setMobileFiltersOpen} section={navHeadings} />}
         </header>

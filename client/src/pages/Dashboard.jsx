@@ -4,12 +4,20 @@ import ProfileForm from "../components/Dashboard/ProfileDashboard";
 import ChatList from "../components/Dashboard/ChatList";
 // import { useParams,Link, BrowserRouter } from 'react-router-dom';
 import { HashLink } from "react-router-hash-link";
+import { useDispatch, useSelector } from 'react-redux';
+import { loginSuccess, logout } from '../redux/authAction';
+import { setUserData, clearUserData } from '../redux/userData/userAction';
+import { history } from "../_helpers/history";
+import { Navigate } from "react-router-dom";
 
 function Dashboard(props) {
   // const {sec} = useParams()
 
   const [hashId1, setHashId] = useState("profile");
   const hashId = window.location.hash.slice(1);
+  const dispatch = useDispatch();
+  const { isAuthenticated, accessToken, refreshToken } = useSelector((state) => state.auth);
+  console.log(accessToken)
 
   useEffect(() => {
     setHashId(hashId);
@@ -26,6 +34,7 @@ function Dashboard(props) {
     profile: <ProfileSection />,
     productListing: <ProductListingSection />,
     chats: <ChatsSection />,
+    logout:<Logout />
   };
 
   const handleMenuClick = (section) => {
@@ -141,5 +150,17 @@ function ChatsSection() {
     </div>
   );
 }
+function Logout(){
+    const dispatch = useDispatch();
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('removeToken');
+    history.navigate = null;
+    history.location  = null;
+    dispatch(clearUserData());
+    dispatch(logout());
+    return <Navigate login={true} to="/auth/login" />
+    
+  }
 
 export default Dashboard;

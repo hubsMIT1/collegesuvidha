@@ -7,7 +7,7 @@ module.exports = {
       const payload = {};
       const secret = process.env.ACCESS_TOKEN_SECRET;
       const options = {
-        expiresIn: "30s",
+        expiresIn: "1h",
         issuer: "collegesuvidha.in",
         audience: userId,
       };
@@ -31,6 +31,7 @@ module.exports = {
       if (err) {
         const errorMessage =
           err.name === "JsonWebTokenError" ? "Unauthorized" : err.message;
+        // if()
         return next(createError.Unauthorized(errorMessage));
       }
       req.payload = payload;

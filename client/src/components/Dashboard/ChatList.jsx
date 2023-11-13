@@ -20,7 +20,7 @@ function ChatList() {
 
                         {
                             Array.from({ length: 5 }, (_, i) => (
-                                <button class="w-full text-left py-2 focus:outline-none focus-visible:bg-indigo-50">
+                                <button key={i} class="w-full text-left py-2 focus:outline-none focus-visible:bg-indigo-50">
                                     <div class="flex items-center">
                                         <img class="rounded-full items-start flex-shrink-0 mr-3" src="https://res.cloudinary.com/dc6deairt/image/upload/v1638102932/user-32-02_vll8uv.jpg" width="32" height="32" alt="Nhu Cassel" />
                                         <div className="w-full">
