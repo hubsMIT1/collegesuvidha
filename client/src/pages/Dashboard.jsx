@@ -4,6 +4,10 @@ import ProfileForm from "../components/Dashboard/ProfileDashboard";
 import ChatList from "../components/Dashboard/ChatList";
 // import { useParams,Link, BrowserRouter } from 'react-router-dom';
 import { HashLink } from "react-router-hash-link";
+import { useDispatch, useSelector } from 'react-redux';
+import { history } from "../_helpers/history";
+import { Navigate } from "react-router-dom";
+import { clearUserDataStore, logoutAuthStore } from "../redux/allAction";
 
 function Dashboard(props) {
   // const {sec} = useParams()
@@ -26,6 +30,7 @@ function Dashboard(props) {
     profile: <ProfileSection />,
     productListing: <ProductListingSection />,
     chats: <ChatsSection />,
+    logout:<Logout />
   };
 
   const handleMenuClick = (section) => {
@@ -141,5 +146,14 @@ function ChatsSection() {
     </div>
   );
 }
+function Logout(){
+    const dispatch = useDispatch();
+    clearUserDataStore(dispatch);
+    logoutAuthStore(dispatch)
+    history.navigate = null;
+    history.location  = null;
+    return <Navigate login={true} to="/auth/login" />
+    
+  }
 
 export default Dashboard;

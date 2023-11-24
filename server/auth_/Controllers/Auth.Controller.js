@@ -11,7 +11,26 @@ const {
   authRegSchema,
   authLoginSchema,
 } = require("../helpers/validation_schema");
+
 module.exports = {
+  userData: async (req, res, next) => {
+    id = req.params.id;
+    const user = await User.findOne({_id:id });
+    if (!user) throw createError.NotFound("User not registered");
+    // console.log(user)
+    res.send(user);
+  },
+  userSellerData: async(req,res,next)=>{
+    id = req.params.id;
+    try{
+
+      const seller = await User.findOne({_id:id});
+      if (!seller) throw createError.NotFound("User not registered");
+      res.send({firstName:seller.firstName, lastName:seller.lastName, about:seller?.about});
+    }catch(err){
+      next(err);
+    }
+  },
   register: async (req, res, next) => {
     console.log(req.body);
     // res.send('registration ');
@@ -31,8 +50,12 @@ module.exports = {
       const savedUser = await user.save();
       const accessToken = await signAccessToken(savedUser.id);
       const refreshToken = await signRefreshToken(savedUser.id);
-
-      res.send({ accessToken, refreshToken });
+      const userId = savedUser.id
+      res.clearCookie('refreshToken', { path: `/auth/refresh-token/${userId}` });
+      res.status(200)
+      .cookie('refreshToken', refreshToken,
+       {sameSite:'strict', httpOnly: false, path: `/auth/refresh-token/${userId}` })
+      .send({ accessToken, refreshToken, userId });
       // res.send(savedUser);
     } catch (error) {
       if (error.isJoi) error.status = 422;
@@ -41,6 +64,8 @@ module.exports = {
   },
   login: async (req, res, next) => {
     // res.send("login route");
+    
+    // console.log(req.cookies.refreshToken)
     try {
       const result = await authLoginSchema.validateAsync(req.body);
       const user = await User.findOne({ email: result.email });
@@ -48,32 +73,42 @@ module.exports = {
       const isMatch = await user.isValidPassword(result.password);
       if (!isMatch)
         throw createError.Unauthorized("Username/password not valid");
-
       const accessToken = await signAccessToken(user.id);
       const refreshToken = await signRefreshToken(user.id);
+      const userId = user.id;
+      res.clearCookie('refreshToken', { path: `/auth/refresh-token/${userId}` });
+      res.status(200)
+      .cookie('refreshToken', refreshToken,
+       {sameSite:'strict', httpOnly: false })
+      .send({ accessToken,refreshToken, userId });
 
-      res.send({ accessToken, refreshToken });
     } catch (error) {
       if (error.isJoi)
         return next(createError.BadRequest("Invalid Username/Password"));
       next(error);
     }
   },
-  refreshToken: async (req, res, next) => {
-    // res.send("refresh Token route");
+  accessToken:async(req,res,next)=>{
     try {
-      let { refreshToken } = req.body;
+      res.status(200).json(req.payload);
+    } catch (error) {
+      next(error);
+    }
+  },
+  refreshToken: async (req, res, next) => {
+    if (!req.headers["authorization"]) return next(createError.Unauthorized());
+    try {
+      let refreshToken =req?.headers["authorization"]?.split(" ")[1];
       if (!refreshToken) throw createError.BadRequest();
       const userId = await verifyRefreshToken(refreshToken);
       const accessToken = await signAccessToken(userId);
       refreshToken = await signRefreshToken(userId);
-      res.send({ accessToken, refreshToken });
+      res.status(200).send({ accessToken,refreshToken, userId });
     } catch (error) {
       next(error);
     }
   },
   logout: async (req, res, next) => {
-    // res.send("logout route");
     try {
       const { refreshToken } = req.body;
       if (!refreshToken) throw createError.BadRequest();
@@ -85,3 +120,4 @@ module.exports = {
     }
   },
 };
+

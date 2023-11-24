@@ -1,16 +1,30 @@
 import React from "react";
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
+import { callAuthApi,config} from "../utils/CallApi";
+import { useDispatch, useSelector } from 'react-redux';
+import { loginSuccess, logout } from '../redux/authData/authAction';
+import { history } from '../_helpers/history';
+// import { fetchUserData } from '../redux/userData/userAction';
+import cookie from 'cookie';
+import axios from "axios";
+import { setUserDataStore } from "../redux/allAction";
+
+function MyForm(props) {
+  
+const navigate = useNavigate()
+const dispatch = useDispatch();
+
 const validate = (values) => {
   const errors = {};
 
   /* validating first name */
-  if (!values.firstName) {
+  if (!values.firstName && props?.signup) {
     errors.firstName = "First name is required";
-  } else if (values.firstName.length < 1) {
+  } else if (values.firstName.length < 1  && props?.signup) {
     errors.firstName = "Invalid First name";
   } else {
-    errors.firstName = "Nice first name 😃";
+    errors.firstName = null;
   }
 
   /* validating last name */
@@ -27,7 +41,7 @@ const validate = (values) => {
   if (!values.email) {
     errors.email = "Email address is required";
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-    errors.email = "Invalid email address";
+    errors.email = null;
   }
 
   /* validating passwords */
@@ -36,24 +50,55 @@ const validate = (values) => {
   } else if (values.password.length <= 6) {
     errors.password = "Password length is weak 😩";
   } else {
-    errors.password = "Password strength is ok 💪";
+    errors.password =null;
   }
 
   /* validating password verification with initial */
-  if (!values.Vpassword) {
-    errors.Vpassword = "Invalid password verification";
-  } else if (values.Vpassword !== values.password) {
-    errors.Vpassword = "Passwords don't match 😟";
+  if (!values.confirmPassword  && props?.signup) {
+    errors.confirmPassword = "Invalid password verification";
+  } else if (values.confirmPassword !== values.password  && props?.signup) {
+    errors.confirmPassword = "Passwords don't match 😟";
   } else {
-    errors.Vpassword = "Passwords match 👏";
+    errors.confirmPassword = null;
   }
 
-  return errors;
+  // return errors;
+  console.log(errors)
+  if(errors?.confirmPassword || errors.email || errors?.firstName || errors.password ) return errors;
 };
 
-//   export default validate;
+// const { isAuthenticated, accessToken, refreshToken } = useSelector((state) => state.auth);
+// console.log(accessToken)
 
-function MyForm(props) {
+const onSubmit = async (values,{ resetForm }) => {
+ 
+  try {
+    const route = props?.signup ? 'register':'login';
+    const {email,password} = values;
+    console.log(config)
+    const data = props?.signup ? values:{email,password};
+    console.log(data);
+    // const response = await axios.post('http://localhost:3001/auth/login', 
+    const response = await axios.post('http://localhost:3001/auth/login', data, {
+      withCredentials: true, // equivalent to credentials: 'include'
+      headers: {
+        'Content-Type': 'application/json',
+      },
+});
+    if (response.status === 200) {
+        setUserDataStore(response.data,dispatch)
+      const { from } = history.location.state || { from: { pathname: '/' } };
+      history.navigate(from);
+      // navigate('/');
+    } else {
+      console.error("Registration failed:", response.data);
+    }
+  } catch (error) {
+    console.error("Error during registration:", error);
+  }
+  // return values;
+}
+
   console.log(props?.login, props?.signup);
   const formik = useFormik({
     initialValues: {
@@ -61,13 +106,12 @@ function MyForm(props) {
       lastName: "",
       email: "",
       password: "",
-      Vpassword: "",
+      confirmPassword: "",
     },
     validate,
-    onSubmit: (values) => {
-      console.log(values);
-    },
+    onSubmit
   });
+  // console.log('Formik values:', formik.values);
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
@@ -168,10 +212,10 @@ function MyForm(props) {
             </div>
             {props?.signup ? (
               <div>
-                {formik.touched.Vpassword && formik.errors.Vpassword ? (
+                {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
                   <div className="block text-sm font-semibold text-red-500">
                     {" "}
-                    *{formik.errors.Vpassword}
+                    *{formik.errors.confirmPassword}
                   </div>
                 ) : (
                   <div>&nbsp;</div>
@@ -179,9 +223,9 @@ function MyForm(props) {
                 <input
                   type="password"
                   className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                  name="Vpassword"
+                  name="confirmPassword"
                   placeholder="Confirm Password"
-                  {...formik.getFieldProps("Vpassword")}
+                  {...formik.getFieldProps("confirmPassword")}
                 />
               </div>
             ) : (
@@ -220,10 +264,11 @@ function MyForm(props) {
               {" "}
               Already have an account?{" "}
               <Link
-                to="/signin"
+                to="/auth/login"
                 className="font-medium text-purple-600 hover:underline"
+                onClick={()=>{formik.resetForm();}}
               >
-                Sign up
+                Log in
               </Link>
             </p>
           ) : (
@@ -231,8 +276,9 @@ function MyForm(props) {
               {" "}
               Don't have an account?{" "}
               <Link
-                to="/signup"
+                to="/auth/signup"
                 className="font-medium text-purple-600 hover:underline"
+                onClick={()=>{formik.resetForm();}}
               >
                 Sign up
               </Link>

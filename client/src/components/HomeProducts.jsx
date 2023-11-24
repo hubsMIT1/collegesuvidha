@@ -1,49 +1,50 @@
-import React, { useState, useEffect } from 'react';
-// import { Link, useParams } from 'react-router-dom';
-import { callApi } from '../utils/CallApi';
-import ProductList from './ProductList';
-
+import React, { useState, useEffect } from "react";
+import ProductList from "./ProductList";
+import { getProducts } from "../services/product_service";
+import { useDispatch } from "react-redux";
+import { setProductStore } from "../redux/allAction";
 function HomePageProducts() {
-    // const { seller_id } = useParams();
-    const [products, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [err, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [err, setError] = useState(null);
 
-    const getProduct = async () => {
-        try {
-            const productResults = await callApi('product', { params: { limit: 9, sort: '-rating' } });
-            if (productResults.message === undefined) {
-                setProduct(productResults.products);
-            } else {
-                setError(productResults);
-            }
-        } catch (err) {
-            setError(err);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const dispatch = useDispatch();
+  const handleGetProduct = async () => {
+    setLoading(true)
+    try {
+      const productResults = await getProducts(1);
+      if (productResults.status === 200) {
+        setProductStore(productResults.data.products, dispatch);
+      } else {
+        setError(productResults.message);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    useEffect(() => {
-        getProduct();
-    }, []);
-    return (
-        <div>
-            <div className="flex justify-center  mb-5">
-                <h1 className="text-cs-textHdClr text-[2rem] font-bold">Products: You may like</h1>
-            </div>
+  useEffect(() => {
+    if(!loading)
+    handleGetProduct();
+  }, []);
+  return (
+    <div>
+      <div className="flex justify-center  mb-5">
+        <h1 className="text-cs-textHdClr text-[2rem] font-bold">
+          Products: You may like
+        </h1>
+      </div>
 
-            {loading ? (
-                <h1>Loading...</h1>
-            ) : err ? (
-                <h1 className="text-red-600">{err.message}</h1>
-            ) : (
-                <ProductList filteredProductList={products} loading={loading} pagi={false} viewBtn={true} />
-            )}
-
-
-        </div>
-    );
+      {loading ? (
+        <h1>Loading...</h1>
+      ) : err ? (
+        <h1 className="text-red-600">{err.message}</h1>
+      ) : (
+        <ProductList loading={loading} pagi={false} viewBtn={true} />
+      )}
+    </div>
+  );
 }
 
 export default HomePageProducts;
