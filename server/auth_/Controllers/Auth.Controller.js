@@ -20,6 +20,17 @@ module.exports = {
     // console.log(user)
     res.send(user);
   },
+  userSellerData: async(req,res,next)=>{
+    id = req.params.id;
+    try{
+
+      const seller = await User.findOne({_id:id});
+      if (!seller) throw createError.NotFound("User not registered");
+      res.send({firstName:seller.firstName, lastName:seller.lastName, about:seller?.about});
+    }catch(err){
+      next(err);
+    }
+  },
   register: async (req, res, next) => {
     console.log(req.body);
     // res.send('registration ');
@@ -92,7 +103,7 @@ module.exports = {
       const userId = await verifyRefreshToken(refreshToken);
       const accessToken = await signAccessToken(userId);
       refreshToken = await signRefreshToken(userId);
-      res.send({ accessToken,refreshToken, userId });
+      res.status(200).send({ accessToken,refreshToken, userId });
     } catch (error) {
       next(error);
     }

@@ -1,16 +1,23 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import authService from "../services/auth_service";
+import { setUserData, clearUserData } from "../redux/userData/userAction";
+import { createProduct, updateProduct } from "../services/product_service";
 
-function ProductForm() {
+
+function ProductForm(props) {
   const [productData, setProductData] = useState({
-    title: "",
-    description: "",
-    category: "",
-    price: "",
-    quantity: "",
-    address: "",
-    zipCode: "",
-    images: [],
+    title: props?.title || "",
+    description:props?.description|| "",
+    category:props?.category|| "",
+    price: props?.price||"",
+    quantity: props?.quantity||"",
+    address:props?.address|| "",
+    zipCode: props?.zipCode||"",
+    images: props?.images||[],
   });
+  const { userData } = useSelector((state) => state.user);
+  const { isAuthenticated, accessToken, refreshToken,userId } = useSelector((state) => state.auth);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -33,7 +40,46 @@ function ProductForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(productData);
+    const formData = new FormData();
+    Object.entries(productData).forEach(([key, value]) => {
+      if (key === 'images') {
+        // Handle images as an array of file objects
+        value.forEach((image, index) => {
+          formData.append(`imagess`, image);
+        });
+      } else if(value?.trim() !== "") {
+        formData.append(key, value);
+      }
+    });
+    if (props?._id) {
+      // Update existing product
+      // console.log(formData)
+      updateProduct(props._id, formData, accessToken)
+        .then((updatedProduct) => {
+          // Handle the updated product data as needed
+          console.log("Product updated:", updatedProduct);
+        })
+        .catch((error) => {
+          console.error("Error updating product:", error);
+        });
+    } else {
+      // console.log(formData)
+
+      // Create a new product
+      createProduct(formData, userId,accessToken,refreshToken)
+        .then((res) => {
+          // Handle the new product data as needed
+          // console.log(res)
+          console.log("New product created:", res?.data?.message);
+        })
+        .catch((error) => {
+          console.error("Error creating product:", error);
+        });
+    }
+    // const data = {name:productData.title, desc:productData.description, type:productData.category,unit:productData.quantity, price:productData.price,suplier:userData?.firstName+userData?.lastName,userId:userData._id}
+
+    
+    // console.log(productData);
   };
 
   return (
@@ -163,7 +209,7 @@ function ProductForm() {
                 onChange={handleInputChange}
                 className="block w-full px-4 py-2 mt-2 text-cs-textHdClr bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 autoComplete="off"
-                required
+                // required
               />
             </div>
 
@@ -183,7 +229,7 @@ function ProductForm() {
                 onChange={handleInputChange}
                 className="block w-full px-4 py-2 mt-2 text-cs-textHdClr bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 autoComplete="off"
-                required
+                // required
               />
             </div>
             <div className="mb-4 pt-0 flex flex-col">

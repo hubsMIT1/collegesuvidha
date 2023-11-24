@@ -1,41 +1,43 @@
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useLayoutEffect } from "react";
+import { useCallback, useEffect, useLayoutEffect } from "react";
 import authService from "../../services/auth_service";
-import { setUserData, clearUserData } from "../../redux/userData/userAction";
 
 const ProfileForm = () => {
   const { userData } = useSelector((state) => state.user);
   const { isAuthenticated, accessToken, refreshToken,userId } = useSelector(
     (state) => state.auth
   );
-
-  const authData = useSelector(
-    (state) => state.auth
-  );
-  console.log(isAuthenticated,refreshToken,userId)
+  
   const dispatch = useDispatch();
 
-  useLayoutEffect(() => {
-    console.log("api backend userdata")
-    async function fetchUserData() {
-      if (isAuthenticated) {
+  const fetchUserData = async () => {
+    console.log("api backend userdata");
+
+      if (isAuthenticated && !userData ) {
         try {
-          const response = await authService.userData(userId, accessToken,refreshToken);
-          console.log(response)
-          if(response.status===200){
-            dispatch(setUserData(response.data))
-            // return ;
-          }
+          console.log(userData)
+          
+            await authService.userData(userId, accessToken,refreshToken,dispatch);
+          
+          // console.log(response)
         } catch (error) {
-          console.log(error.message)
+          console.log(error)
         }
       }
     }
-    fetchUserData();
-  }, [isAuthenticated,accessToken, userId,dispatch, ]);
-  console.log(userData)
+  useEffect(() => {
+    
+    // document.addEventListener('load',fetchUserData);
+    // return ()=>{
+    //   document.removeEventListener('click',fetchUserData)
+    // }
+    if(isAuthenticated)
+      fetchUserData();
+
+  }, []);
+
 
   useEffect(() => {
     formik.setValues({

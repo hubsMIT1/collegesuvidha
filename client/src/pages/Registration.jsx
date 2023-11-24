@@ -3,13 +3,12 @@ import { useFormik } from "formik";
 import { Link, useNavigate} from "react-router-dom";
 import { callAuthApi,config} from "../utils/CallApi";
 import { useDispatch, useSelector } from 'react-redux';
-import { loginSuccess, logout } from '../redux/authAction';
+import { loginSuccess, logout } from '../redux/authData/authAction';
 import { history } from '../_helpers/history';
 // import { fetchUserData } from '../redux/userData/userAction';
 import cookie from 'cookie';
 import axios from "axios";
-
-//   export default validate;
+import { setUserDataStore } from "../redux/allAction";
 
 function MyForm(props) {
   
@@ -87,12 +86,7 @@ const onSubmit = async (values,{ resetForm }) => {
       },
 });
     if (response.status === 200) {
-      console.log(response.data)
-      dispatch(loginSuccess(response.data.accessToken,response.data.refreshToken, response.data.userId));
-      // dispatch(fetchUserData())
-      localStorage.setItem('accessToken', response.data.accessToken);
-      localStorage.setItem('refreshToken', response.data.refreshToken);
-      localStorage.setItem('userId',response.data.userId);
+        setUserDataStore(response.data,dispatch)
       const { from } = history.location.state || { from: { pathname: '/' } };
       history.navigate(from);
       // navigate('/');

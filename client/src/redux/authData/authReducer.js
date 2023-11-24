@@ -5,17 +5,17 @@ const initialState = {
   userId: localStorage.getItem("userId") || null,
 };
 
-
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case "LOGIN_SUCCESS":
-      return {
+      const newState = {
         ...state,
         isAuthenticated: true,
         accessToken: action.payload.accessToken,
-        refreshToken:action.payload.refreshToken,
+        refreshToken: action.payload.refreshToken,
         userId: action.payload.userId,
       };
+      return newState;
     case "LOGOUT":
       return initialState;
     default:

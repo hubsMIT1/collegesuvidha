@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
 import "swiper/swiper-bundle.css";
 
 import MapImage from "../assets/map.png";
@@ -6,6 +6,9 @@ import { Navigation, Autoplay } from "swiper/modules";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { formatDistanceToNow, format } from "date-fns";
+
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
@@ -15,24 +18,18 @@ import OwnerCard from "./OwnerCard";
 import MapExample from "../components/GoogleMap";
 import { Link } from "react-router-dom";
 
-import { callApi } from "../utils/CallApi";
+import { getProductsById } from "../services/product_service";
 
-function ProductDetails(props) {
+const ProductDetails = (props) => {
+  const [err, setError] = useState();
+  const { id, index } = useParams();
+  const ind = parseInt(index);
+  const [products, setProduct] = useState();
+  const { productData } = useSelector((state) => state.productData);
+  const [prodDate, setProDate] = useState();
+ 
   // Sample product data
-  const product = {
-    name: "Sample Product",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    price: "$99.99",
-    seller: "John Doe",
-    location: "New York, NY",
-    uploadedDate: "2 days ago",
-    isFavorite: false, // Set to true if the user has favorited this product
-    owner: {
-      name: "Seller Name",
-      sellerRating: "4.8", // Seller's rating
-    },
-    isFeatured: true,
-  };
+  
 
   // Function to toggle favorite status
   const toggleFavorite = () => {
@@ -44,24 +41,45 @@ function ProductDetails(props) {
   const openChat = () => {
     // Implement your chat logic here
   };
-  const [err, setError] = useState(null);
 
-  const { id } = useParams();
-  const [products, setProduct] = useState(null);
-
-  const getProduct = async () => {
-    try {
-      const productResults = await callApi(`product`, { params: {} });
-      if (productResults.message === undefined)
-        setProduct(productResults.products[id]);
-      else setError(productResults);
-    } catch (err) {
-      setError(err);
+  const handleGetProduct = async () => {
+    if (productData) setProduct(productData[ind]);
+    else if (!products) {
+      try {
+        const productResults = await getProductsById(1, id);
+        if (productResults.status === 200) {
+          setProduct(productResults.data);
+        }
+      } catch (err) {
+        setError(err.message);
+      }
+    }
+    console.log(products)
+    if (products && products?.updatedAt) {
+      const inputDate = new Date(products?.updatedAt);
+      // Format the date as "Month day, year"
+      const formattedDate = format(inputDate, "MMMM d, yyyy");
+      const distanceToNow = formatDistanceToNow(inputDate, { addSuffix: true });
+      setProDate({ formattedDate, distanceToNow });
+      console.log(prodDate)
     }
   };
-  useEffect(() => {
-    getProduct();
+  useLayoutEffect(() => {
+    handleGetProduct();
   }, []);
+
+  if (err) {
+    return (
+      <h1 className="flex justify-center text-xl text-red-500">
+        {err?.message}
+      </h1>
+    );
+  }
+
+  if (!products) {
+    // You might want to show a loading state here
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -76,8 +94,7 @@ function ProductDetails(props) {
             <div className="bg-white shadow-lg rounded-lg overflow-hidden">
               <div className="lg:flex relative">
                 <div className="lg:w-1/2 items-center relative bg-black">
-
-                    {/* make a swiper component */}
+                  {/* make a swiper component */}
                   <Swiper
                     // install Swiper modules
                     modules={[Navigation, Autoplay]}
@@ -89,8 +106,11 @@ function ProductDetails(props) {
                     }}
                     className="flex justify-center items-center"
                   >
-                    {products?.images?.map((link) => (
-                      <SwiperSlide className="flex justify-center items-center h-[424px] align-middle bg-black">
+                    {products?.images?.map((link, index) => (
+                      <SwiperSlide
+                        key={index + 1}
+                        className="flex justify-center items-center h-[424px] align-middle bg-black"
+                      >
                         <div className="h-full object-cover  flex justify-center items-center">
                           {" "}
                           <img
@@ -99,13 +119,12 @@ function ProductDetails(props) {
                             className="w-1/2 h-full "
                             alt={products?.title}
                           />{" "}
-        
                         </div>
                       </SwiperSlide>
                     ))}
                   </Swiper>
                   {/* make a featured tag component */}
-                  {product.isFeatured && (
+                  {products?.isFeatured && (
                     <span
                       className="absolute top-0 left-0 bg-yellow-100 px-2 py-1 m-2 rounded z-50"
                       onClick={toggleFeatured}
@@ -128,7 +147,7 @@ function ProductDetails(props) {
                         ₹ {products?.price}
                       </div>
                       <div className="text-gray-500 text-sm">
-                        Seller: {product.seller}
+                        Seller: {products?.seller}
                       </div>
                       <div className="text-gray-500 text-sm">
                         Brand: {products?.brand}
@@ -138,15 +157,21 @@ function ProductDetails(props) {
                       </div>
 
                       <div className="text-gray-500 text-sm">
-                        Location: {product.location}
+                        Location: {products?.Address},{products?.zipCode}
                       </div>
-                      <div className="text-gray-500 text-sm">
-                        Uploaded: {product.uploadedDate}
+                      {prodDate && <div className="text-gray-500 text-sm">
+                        Updated:{" "}
+                        {prodDate
+                          ? prodDate.formattedDate +
+                            "," +
+                            prodDate.distanceToNow
+                          : ""}
                       </div>
+                      }
                     </div>
                   </div>
                 </div>
-                {product.isFavorite ? (
+                {products?.isFavorite ? (
                   <span
                     className="absolute top-0 right-0 bg-red-500 text-white px-2 py-1 m-2 rounded-full cursor-pointer z-50"
                     onClick={toggleFavorite}
@@ -166,10 +191,9 @@ function ProductDetails(props) {
           </div>
 
           <div className="mt-4  md:flex">
-
             {/* Owner details */}
             <div className=" p-4 rounded-lg md:w-1/2">
-              <OwnerCard />
+              {products && <OwnerCard userId={products?.userId} />}
             </div>
 
             {/* Map section */}
@@ -193,6 +217,6 @@ function ProductDetails(props) {
       )}
     </div>
   );
-}
+};
 
 export default ProductDetails;

@@ -3,13 +3,16 @@ import { Dialog, Disclosure, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 
 function SideBar(props) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(props?.isMobile);
   useEffect(() => {
     props.setIsMobile(mobileFiltersOpen);
   }, [mobileFiltersOpen]);
-
+  const { isAuthenticated, accessToken, refreshToken, userId } = useSelector(
+    (state) => state.auth
+  );
   return (
     <div className="bg-white">
       <div>
@@ -59,7 +62,9 @@ function SideBar(props) {
                   <form className="mt-4  border-gray-200">
                     <h3 className="sr-only">Categories</h3>
 
-                    {props?.section.map((section) => (
+                    {props?.section.map((section,index) => {
+                     if(index===2 && !isAuthenticated) return null;
+                    return (
                       <Disclosure
                         as="div"
                         key={section.id}
@@ -85,7 +90,9 @@ function SideBar(props) {
                           </>
                         )}
                       </Disclosure>
-                    ))}
+                    )
+                                }
+                    )}
 
                     <Disclosure
                       as="div"

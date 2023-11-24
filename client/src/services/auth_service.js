@@ -1,59 +1,64 @@
-import axios from "axios";
 import { callAuthApi } from "../utils/CallApi";
-
-import { Navigate, Outlet } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { setUserData, clearUserData } from "../redux/userData/userAction";
-
 import { history } from "../_helpers/history";
-const API_URL = "/auth";
+import { setAuthStore, setUserDataStore } from "../redux/allAction";
 
-// const register = (data)=>{
-
-// }
 const userData = async (id, accessToken, refreshToken, dispatch) => {
+  // Use the handleApiResponse function to handle the response
   try {
     const response = await callAuthApi.get(`/user/${id}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    console.log(response);
+    // console.log(response);
+    const handledResponse = await handleApiResponse(
+      response,
+      id,
+      refreshToken,
+      history,
+      dispatch
+    );
 
-    if (response.status === 200) {
-      return response;
-    } else {
-      // Handle other errors, e.g., unauthorized access
-      return response.status;
+    if (handledResponse?.status === 200) {
+      setUserDataStore(handledResponse.data, dispatch);
+      return handledResponse;
     }
-  } catch (error) {
-    // Handle network errors or other exceptions
-    if (error?.response?.status === 401) {
-      console.log(error?.response?.status);
-
-      // JWT expired, attempt to refresh the token
+  } catch (err) {
+    if (err?.response?.status === 401) {
       try {
-        const res = await handleRefreshToken(id, refreshToken);
-        console.log(res, "refreshToekenen");
-        return res;
-      } catch (err) {
-        return (
-          <Navigate
-            login={true}
-            to="/auth/login"
-            state={{ from: history.location }}
-          />
+        const handledResponse = await handleApiResponse(
+          "",
+          id,
+          refreshToken,
+          history,
+          dispatch
         );
+        if (handledResponse?.status === 200)
+          return await userData(id, accessToken, refreshToken,dispatch);
+        return handledResponse;
+      } catch (error) {
+        return error;
       }
     }
-    return error.message;
+    return err;
   }
 };
-const handleRefreshToken = async (id, refreshToken) => {
-  console.log(id, refreshToken, "refreshFunction token");
+
+const getSellerById = async (id) => {
   try {
-    // Make a request to refresh the token using the refresh token
-    const response = await callAuthApi.post(
+    const response = await callAuthApi.get(`/seller/${id}`);
+    if (response?.status === 200) {
+      return response;
+    }
+  } catch (err) {
+    return err.message;
+  }
+};
+
+const handleRefreshToken = async (id, refreshToken, dispatch) => {
+  console.log("refreshToken", refreshToken);
+  try {
+    const res = await callAuthApi.post(
       `/refresh-token/${id}`,
       {},
       {
@@ -62,61 +67,45 @@ const handleRefreshToken = async (id, refreshToken) => {
         },
       }
     );
-    console.log(response);
-    if (response.status === 200) {
-      const { accessToken, refreshTokens } = response.data;
-      console.log(accessToken, "refre");
-      const againUserDataRes = await userData(id, accessToken, refreshTokens);
-      return againUserDataRes;
-    } else {
-      return (
-        <Navigate
-          login={true}
-          to="/auth/login"
-          state={{ from: history.location }}
-        />
-      );
+    if (res.status === 200) {
+      setAuthStore(res.data, dispatch);
+      return res;
     }
   } catch (error) {
-    return error.message;
+    // if(error?.response?.status === 401)
+    //   return <Navigate to={'/auth/login'} />
+
+    return error;
   }
 };
-// const signup = (email,password)=>{
-//     return axios.post(API_URL+"/signup",{
-//         email,
-//         password,
-//     }).then((response)=>{
-//         if(response.data.accessToken){
-//             localStorage.setItem("user", JSON.stringify(response.data));
 
-//         }
-//         return response.data;
-//     })
-// }
-
-// const login = (email,password)=>{
-//     return axios.post(API_URL + "/login",{
-//         email,
-//         password,
-//     }).then((response)=>{
-//         if(response.data.accessToken){
-//             localStorage.setItem("user",JSON.stringify(response.data))
-//         }
-//         return response.data;
-//     })
-// }
-// const logout = () =>{
-//     localStorage.removeItem("user")
-// }
-
-// const getCurrentUser = () => {
-//     return JSON.parse(localStorage.getItem("user"));
-
-// }
+const handleApiResponse = async (
+  response,
+  id,
+  refreshToken,
+  history,
+  dispatch
+) => {
+  if (response?.status === 200) {
+    return response;
+  } else if (response === "") {
+    try {
+      const res = await handleRefreshToken(id, refreshToken, dispatch);
+      console.log(res);
+      return res;
+    } catch (err) {
+      // Redirect to login page if refresh token fails
+      return err;
+    }
+  }
+  return response;
+};
 
 const authService = {
   userData,
   handleRefreshToken,
+  handleApiResponse,
+  getSellerById,
 };
 
 export default authService;

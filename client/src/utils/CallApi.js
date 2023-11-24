@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_URL,AUTH_API } from "./constants";
+import { BASE_URL,AUTH_API,PRODCUT_API } from "./constants";
 
 const config = {
   headers: {
@@ -55,6 +55,8 @@ const callAuthApi = axios.create({
   baseURL: AUTH_API,
   credentials: 'include',
 });
+const callProductApi = axios.create({
+  baseURL: PRODCUT_API,
+})
 
-
-export  {callApi,callAuthApi,config}
+export  {callApi,callAuthApi,config,callProductApi}
