@@ -10,6 +10,8 @@ import ProductForm from "./pages/ProductForm";
 import FilterSection from "./components/FilterSection";
 import PrivateRoute from './_helpers/privateRoute';
 import RemoveLoginRoute from "./_helpers/removedLoginRoute";
+import NewAdminForm from "./pages/AddNewAdmin";
+import { AdminProductList } from "./components/Dashboard/adminProductList";
 // import TestGetProduct from "./testApi/getProdujct";
 function App() {
  
@@ -36,8 +38,12 @@ function App() {
           />
           <Route element={<PrivateRoute />}>
             <Route exact path="/seller/:sellerId" element={<SellerPage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path= "/dashboard/:section" element={<Dashboard />} />
             <Route path="/addproduct" element={<ProductForm />} />
+            <Route path="/dashboard/your-products/:sellerId" element={<FilterSection title ={"Your Products"} seller={true} />} />
+            <Route path="/auth/add-new-admin" element={<NewAdminForm /> } />
+            <Route path="/dashboard/admin/products-list" element={<AdminProductList /> } />
+
           </Route>
         </Routes>
       </BrowserRouter>

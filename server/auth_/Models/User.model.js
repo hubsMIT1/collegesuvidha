@@ -21,6 +21,13 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  contact:{
+    type:Number,
+    
+  },
+  address:{
+    type:String
+  }
 });
 
 // middle ware to work before saving the data in db (eg: hashing password)

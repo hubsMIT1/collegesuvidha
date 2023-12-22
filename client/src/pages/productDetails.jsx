@@ -27,9 +27,8 @@ const ProductDetails = (props) => {
   const [products, setProduct] = useState();
   const { productData } = useSelector((state) => state.productData);
   const [prodDate, setProDate] = useState();
- 
+
   // Sample product data
-  
 
   // Function to toggle favorite status
   const toggleFavorite = () => {
@@ -54,14 +53,14 @@ const ProductDetails = (props) => {
         setError(err.message);
       }
     }
-    console.log(products)
+    console.log(products);
     if (products && products?.updatedAt) {
       const inputDate = new Date(products?.updatedAt);
       // Format the date as "Month day, year"
       const formattedDate = format(inputDate, "MMMM d, yyyy");
       const distanceToNow = formatDistanceToNow(inputDate, { addSuffix: true });
       setProDate({ formattedDate, distanceToNow });
-      console.log(prodDate)
+      console.log(prodDate);
     }
   };
   useLayoutEffect(() => {
@@ -126,7 +125,7 @@ const ProductDetails = (props) => {
                   {/* make a featured tag component */}
                   {products?.isFeatured && (
                     <span
-                      className="absolute top-0 left-0 bg-yellow-100 px-2 py-1 m-2 rounded z-50"
+                      className="absolute top-0 left-0 bg-yellow-100 px-2 py-1 m-2 rounded z-10"
                       onClick={toggleFeatured}
                     >
                       Featured
@@ -159,28 +158,29 @@ const ProductDetails = (props) => {
                       <div className="text-gray-500 text-sm">
                         Location: {products?.Address},{products?.zipCode}
                       </div>
-                      {prodDate && <div className="text-gray-500 text-sm">
-                        Updated:{" "}
-                        {prodDate
-                          ? prodDate.formattedDate +
-                            "," +
-                            prodDate.distanceToNow
-                          : ""}
-                      </div>
-                      }
+                      {prodDate && (
+                        <div className="text-gray-500 text-sm">
+                          Updated:{" "}
+                          {prodDate
+                            ? prodDate.formattedDate +
+                              "," +
+                              prodDate.distanceToNow
+                            : ""}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
                 {products?.isFavorite ? (
                   <span
-                    className="absolute top-0 right-0 bg-red-500 text-white px-2 py-1 m-2 rounded-full cursor-pointer z-50"
+                    className="absolute top-0 right-0 bg-red-500 text-white px-2 py-1 m-2 rounded-full cursor-pointer z-10"
                     onClick={toggleFavorite}
                   >
                     ❤️ Favorite
                   </span>
                 ) : (
                   <span
-                    className="absolute top-0 right-0 bg-gray-500 text-white px-2 py-1 m-2 rounded-full cursor-pointer z-50"
+                    className="absolute top-0 right-0 bg-gray-500 text-white px-2 py-1 m-2 rounded-full cursor-pointer z-10"
                     onClick={toggleFavorite}
                   >
                     ♡ Favorite

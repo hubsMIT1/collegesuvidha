@@ -15,7 +15,6 @@ const userData = async (id, accessToken, refreshToken, dispatch) => {
       response,
       id,
       refreshToken,
-      history,
       dispatch
     );
 
@@ -30,11 +29,10 @@ const userData = async (id, accessToken, refreshToken, dispatch) => {
           "",
           id,
           refreshToken,
-          history,
           dispatch
         );
         if (handledResponse?.status === 200)
-          return await userData(id, accessToken, refreshToken,dispatch);
+          return await userData(id, handledResponse.data.accessToken, handledResponse.data.refreshToken,dispatch);
         return handledResponse;
       } catch (error) {
         return error;
@@ -83,7 +81,6 @@ const handleApiResponse = async (
   response,
   id,
   refreshToken,
-  history,
   dispatch
 ) => {
   if (response?.status === 200) {
@@ -100,12 +97,110 @@ const handleApiResponse = async (
   }
   return response;
 };
+const handleRegistration = async(route,data) =>{
+  try{
 
+    const res = await callAuthApi.post(`/${route}`, data, {
+        withCredentials: true, // equivalent to credentials: 'include'
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+    return res;
+  }
+  catch(err){
+    console.log(err.message)
+  }
+};
+const handleProfileUpdate = async(data,userId,accessToken,refreshToken,dispatch)=>{
+  try{
+    const res = await callAuthApi.put(`/update/${userId}`,data,{
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    // if(res?.status===200){setUserDataStore(res.data, dispatch); return res.data;}
+    // console.log(res?.message)
+    const handledResponse = await handleApiResponse(
+      res,
+      userId,
+      refreshToken,
+      dispatch
+    );
+
+    if (handledResponse?.status === 200) {
+      setUserDataStore(handledResponse.data, dispatch);
+      return handledResponse.data;
+    }
+  } catch (err) {
+    if (err?.response?.status === 401) {
+      try {
+        const handledResponse = await handleApiResponse(
+          "",
+          userId,
+          refreshToken,
+          dispatch
+        );
+        if (handledResponse?.status === 200)
+          return await handleProfileUpdate(userId, handledResponse.data.accessToken, handledResponse.data.refreshToken,dispatch);
+        return handledResponse.data;
+      } catch (error) {
+        return error;
+      }
+    }
+    return err;
+  }
+};
+const addNewAdminHandler = async(adminId,userId,accessToken,refreshToken,dispatch)=>{
+  try{
+    const res = await callAuthApi.post(`/add-admin`,adminId,{
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    // if(res?.status===200){setUserDataStore(res.data, dispatch); return res.data;}
+    // console.log(res?.message)
+    const handledResponse = await handleApiResponse(
+      res,
+      userId,
+      refreshToken,
+      dispatch
+    );
+
+    if (handledResponse?.status === 200) {
+      setUserDataStore(handledResponse.data, dispatch);
+      return handledResponse.data;
+    }
+  } catch (err) {
+    if (err?.response?.status === 401) {
+      try {
+        const handledResponse = await handleApiResponse(
+          "",
+          userId,
+          refreshToken,
+          dispatch
+        );
+        if (handledResponse?.status === 200)
+          return await addNewAdminHandler(adminId,userId, handledResponse.data.accessToken, handledResponse.data.refreshToken,dispatch);
+        return handledResponse.data;
+      } catch (error) {
+        return error;
+      }
+    }
+    return err;
+  }
+}
 const authService = {
   userData,
   handleRefreshToken,
   handleApiResponse,
   getSellerById,
+  handleRegistration,
+  handleProfileUpdate,
+  addNewAdminHandler
+  
+
 };
 
 export default authService;

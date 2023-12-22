@@ -6,58 +6,53 @@ import authService from "../../services/auth_service";
 
 const ProfileForm = () => {
   const { userData } = useSelector((state) => state.user);
-  const { isAuthenticated, accessToken, refreshToken,userId } = useSelector(
+  const { isAuthenticated, accessToken, refreshToken, userId } = useSelector(
     (state) => state.auth
   );
-  
+  console.log(isAuthenticated, accessToken, refreshToken, userId);
+
   const dispatch = useDispatch();
 
   const fetchUserData = async () => {
     console.log("api backend userdata");
 
-      if (isAuthenticated && !userData ) {
-        try {
-          console.log(userData)
-          
-            await authService.userData(userId, accessToken,refreshToken,dispatch);
-          
-          // console.log(response)
-        } catch (error) {
-          console.log(error)
-        }
+    if (isAuthenticated && !userData) {
+      try {
+        console.log(userData);
+
+        await authService.userData(userId, accessToken, refreshToken, dispatch);
+
+        // console.log(response)
+      } catch (error) {
+        console.log(error);
       }
     }
+  };
   useEffect(() => {
-    
     // document.addEventListener('load',fetchUserData);
     // return ()=>{
     //   document.removeEventListener('click',fetchUserData)
     // }
-    if(isAuthenticated)
-      fetchUserData();
-
-  }, []);
-
+    if (isAuthenticated) fetchUserData();
+  }, [isAuthenticated]);
 
   useEffect(() => {
     formik.setValues({
       firstName: userData?.firstName || "",
       lastName: userData?.lastName || "",
       email: userData?.email || "",
-      contact: userData?.contact || "",
-      address1: userData?.address1 || "",
-      address2: userData?.address2 || "",
+      contact: userData?.contact || null,
+      address: userData?.address || "",
     });
   }, [userData]);
   const formik = useFormik({
-    initialValues:{
+    initialValues: {
       firstName: userData?.firstName || "",
       lastName: userData?.lastName || "",
       email: userData?.email || "",
-      contact: userData?.contact || "",
-      address1: userData?.address1 || "",
-      address2: userData?.address2 || "",
-    },    
+      contact: userData?.contact || null,
+      address: userData?.address || "",
+    },
     validationSchema: yup.object().shape({
       firstName: yup.string().required("First name is required"),
       //   lastName: yup.string().required("Last name is required"),
@@ -69,11 +64,19 @@ const ProfileForm = () => {
           "Phone number is not valid"
         )
         .required("Contact number is required"),
-      address1: yup.string().required("Address 1 is required"),
+      address: yup.string().required("Address  is required"),
       //   address2: yup.string().required("Address 2 is required"),
     }),
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.log(values);
+      const data = await authService.handleProfileUpdate(
+        values,
+        userId,
+        accessToken,
+        refreshToken,
+        dispatch
+      );
+      console.log(data);
     },
   });
   // console.log(formik.values,userData?.email)
@@ -123,6 +126,7 @@ const ProfileForm = () => {
               onBlur={formik.handleBlur}
               value={formik.values.email}
               className="w-full p-2 rounded-md border border-gray-300"
+              readOnly
             />
             {formik.touched.email && formik.errors.email && (
               <p className="text-red-500">{formik.errors.email}</p>
@@ -146,31 +150,16 @@ const ProfileForm = () => {
           <div className="col-span-4">
             <input
               type="text"
-              name="address1"
-              id="address1"
-              placeholder="Address 1"
+              name="address"
+              id="address"
+              placeholder="Address"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.address1}
+              value={formik.values.address}
               className="w-full p-2 rounded-md border border-gray-300"
             />
-            {formik.touched.address1 && formik.errors.address1 && (
-              <p className="text-red-500">{formik.errors.address1}</p>
-            )}
-          </div>
-          <div className="col-span-4">
-            <input
-              type="text"
-              name="address2"
-              id="address2"
-              placeholder="Address 2"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.address2}
-              className="w-full p-2 rounded-md border border-gray-300"
-            />
-            {formik.touched.address2 && formik.errors.address2 && (
-              <p className="text-red-500">{formik.errors.address2}</p>
+            {formik.touched.address && formik.errors.address && (
+              <p className="text-red-500">{formik.errors.address}</p>
             )}
           </div>
         </div>

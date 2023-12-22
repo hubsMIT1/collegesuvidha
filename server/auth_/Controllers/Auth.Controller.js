@@ -10,6 +10,7 @@ const User = require("../Models/User.model");
 const {
   authRegSchema,
   authLoginSchema,
+  updateProfileSchema,
 } = require("../helpers/validation_schema");
 
 module.exports = {
@@ -85,6 +86,33 @@ module.exports = {
     } catch (error) {
       if (error.isJoi)
         return next(createError.BadRequest("Invalid Username/Password"));
+      next(error);
+    }
+  },
+  updateUser: async (req, res, next) => {
+    try {
+      const userId = req.payload.aud; 
+
+      const validResult = await updateProfileSchema.validateAsync(req.body);
+      const { firstName, lastName, contact, address } = validResult;
+
+      const updateObject = {};
+      if (firstName) updateObject.firstName = firstName;
+      if (lastName) updateObject.lastName = lastName;
+      if (contact) updateObject.contact = contact;
+      if (address) updateObject.address = address;
+  
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: userId }, 
+        updateObject, 
+        { new: true } 
+      );
+  
+      if (!updatedUser) {
+        return next(createError.NotFound("User not found"));
+      }
+      res.status(200).send(updatedUser);
+    } catch (error) {
       next(error);
     }
   },

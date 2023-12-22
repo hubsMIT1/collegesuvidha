@@ -1,8 +1,14 @@
 const initialState = {
-  isAuthenticated: localStorage.getItem("userId")?true:false,
+  isAuthenticated: localStorage.getItem("userId") ? true : false,
   accessToken: localStorage.getItem("accessToken") || null,
   refreshToken: localStorage.getItem("refreshToken") || null,
   userId: localStorage.getItem("userId") || null,
+};
+const initialState1 = {
+  isAuthenticated: false,
+  accessToken: null,
+  refreshToken: null,
+  userId: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -17,7 +23,7 @@ const authReducer = (state = initialState, action) => {
       };
       return newState;
     case "LOGOUT":
-      return initialState;
+      return initialState1;
     default:
       return state;
   }

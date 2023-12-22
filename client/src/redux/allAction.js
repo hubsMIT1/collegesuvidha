@@ -10,10 +10,10 @@ export const setAuthStore = (data,dispatch) =>{
     localStorage.setItem('userId',userId);
 }
 export const logoutAuthStore = (dispatch)=>{
-    dispatch(logout());
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userId');
-    localStorage.removeItem('removeToken');
+    localStorage.removeItem('refreshToken');
+    dispatch(logout());
 }
 export const setUserDataStore = (data,dispatch)=>{
     dispatch(setUserData(data));
@@ -23,8 +23,9 @@ export const clearUserDataStore = (dispatch)=>{
     
 }
 export const setProductStore = (data, dispatch)=>{
+
     dispatch(setProductData(data));
-    // console.log(data);
+    console.log(data);
 
 }
 export const clearProductStore = (dispatch)=>{
