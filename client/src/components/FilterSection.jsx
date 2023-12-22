@@ -14,8 +14,9 @@ import { getProducts, getProductsByUserId } from "../services/product_service";
 import { useDispatch, useSelector } from "react-redux";
 import { setProductData } from "../redux/productData/productAction";
 import { categories } from "../utils/constants";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { setProductStore } from "../redux/allAction";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const sortOptions = [
   //   { name: 'Most Popular', href: '#', current: true },
@@ -74,20 +75,46 @@ const FilterSection = React.memo(function FilterSection(props) {
   const [loading, setLoading] = useState(false);
   const [productList, setProductList] = useState([]);
 
-  const [sorts, setSorts] = useState("Featured");
-  
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const categoryParam = params.get("category");
+  const sortParam = params.get("sort");
+  const pageParam = params.get("page");
+  const searchParam = params.get("search");
+  const order = params.get("order");
+  // const sellerId = params.get("sellerId")
+  console.log(searchParam, sortParam);
+  let tempsearchtext;
+  const { sellerId } = useParams();
+  let updatedSortOptions;
+  if (sortParam) {
+    updatedSortOptions = sortOptions?.map((option) => {
+      // Check if the current option matches the sortParam and order
+      if (option.href === sortParam) {
+        if (order) {
+          if (parseInt(order) === option.order) return option;
+        } else return option;
+      }
+    });
+  }
+  console.log(updatedSortOptions);
+  const [selectedCategories, setSelectedCategories] = useState(
+    categoryParam ? categoryParam.split(",") : []
+  );
+  const [sorts, setSorts] = useState(updatedSortOptions || sortOptions[0]);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(pageParam || 1);
+  const [searchText, setSearchText] = useState(searchParam);
+  tempsearchtext = searchText;
   const [totalPage, setTotalPage] = useState(1);
-
-  const [filters, setFilters] = useState([
-    {
-      id: "category",
-      name: "Category",
-      options: [],
-    },
-  ]);
+  // console.log(categoryParam,sortParam,pageParam)
+  const initialCategoryFilter = {
+    id: "category",
+    name: "Category",
+    options: [],
+  };
+  const [filters, setFilters] = useState([initialCategoryFilter]);
 
   const dispatch = useDispatch();
   //category filter
@@ -117,13 +144,16 @@ const FilterSection = React.memo(function FilterSection(props) {
     const categoryOptions = data.map((cat) => ({
       value: cat,
       label: cat,
-      checked: false,
+      checked: selectedCategories?.includes(cat) ? true : false,
     }));
     // Update the filters state with category options
+
     setFilters([
       { id: "category", name: "Category", options: categoryOptions },
     ]);
+    setSearchText(searchParam || tempsearchtext);
   };
+
   useEffect(() => {
     getCategories();
   }, []);
@@ -133,24 +163,66 @@ const FilterSection = React.memo(function FilterSection(props) {
   const handleGetProducts = async () => {
     setLoading(true);
     // console.log("getProduts called")
+    console.log(selectedCategories);
     try {
       let data;
       if (props?.seller) {
         data = await getProductsByUserId(
           currentPage,
-          props?.sellerId,
+          sellerId,
           selectedCategories,
           sorts
         );
       } else {
-        data = await getProducts(currentPage, selectedCategories, sorts);
+        data = await getProducts(
+          currentPage,
+          selectedCategories,
+          sorts,
+          searchParam
+        );
       }
       if (data.status === 200) {
         // console.table(data.data.products)
-        setProductList(data.data);
+        setProductList(data.data.products);
+        console.log(data.data.totalPages);
         setTotalPage(data.data.totalPages);
         setProductStore(data.data.products, dispatch);
-        
+        const queryParams = {};
+
+        if (selectedCategories.length > 0) {
+          queryParams.category = selectedCategories.join(",");
+        }
+
+        if (sorts.id) {
+          queryParams.sort = sorts.id;
+          queryParams.order = sorts.order;
+        }
+
+        if (currentPage) {
+          queryParams.page = currentPage;
+        }
+        if (searchParam || tempsearchtext) {
+          queryParams.search = searchParam || tempsearchtext || undefined;
+        }
+
+        // Only include non-empty parameters in the URL
+        const nonEmptyQueryParams = Object.fromEntries(
+          Object.entries(queryParams).filter(
+            ([_, value]) =>
+              value !== undefined && value !== null && value !== ""
+          )
+        );
+
+        const queryString = new URLSearchParams(nonEmptyQueryParams).toString();
+
+        // Only update the URL if there are non-empty parameters
+        if (queryString) {
+          if (!props?.seller) navigate(`/allproducts?${queryString}`);
+          else navigate(`/dashboard/your-products/${sellerId}?${queryString}`);
+
+          getCategories();
+        }
+        // navigate(`/allproduct?category=${selectedCategories.join(',')}&sort=${sorts.id}&page=${currentPage}`);
       } else setError(data);
     } catch (err) {
       setError(err);
@@ -162,7 +234,32 @@ const FilterSection = React.memo(function FilterSection(props) {
 
   useEffect(() => {
     handleGetProducts();
-  }, [currentPage, selectedCategories, sorts]); //selectedCategories,currentPage
+    // categoryHandler(check, ind, secId)
+  }, [currentPage, selectedCategories, sorts, searchText, searchParam]); //selectedCategories,currentPage
+
+  // useEffect(() => {
+
+  //   const queryParams = {};
+
+  //   if (selectedCategories.length > 0) {
+  //     queryParams.category = selectedCategories.join(',');
+  //   }
+
+  //   if (sorts.id) {
+  //     queryParams.sort = sorts.id;
+  //   }
+
+  //   if (currentPage) {
+  //     queryParams.page = currentPage;
+  //   }
+
+  //   const queryString = new URLSearchParams(queryParams).toString();
+
+  //   // Only update the URL if there are non-null parameters
+  //   if (queryString) {
+  //     navigate(`/allproducts?${queryString}`,{ replace: true });
+  //   }
+  // }, [location.search, selectedCategories, sorts.id, currentPage]);
 
   // console.log(fileredProductList)
   return (
@@ -301,7 +398,7 @@ const FilterSection = React.memo(function FilterSection(props) {
                 <div>
                   <Menu.Button className="group inline-flex justify-center text-xs font-medium text-gray-900 hover:text-gray-700">
                     Sort by:
-                    <span className="pl-1 ">{sorts?.name}</span>
+                    <span className="pl-1 ">{sorts?.name || "Featured"}</span>
                     <ChevronDownIcon
                       className="-mr-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                       aria-hidden="true"

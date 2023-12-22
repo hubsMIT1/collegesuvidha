@@ -4,8 +4,9 @@ const Schema = mongoose.Schema;
 const AdminSchema = new Schema({
     adminId: {
       type: String,
-    //   required: true,
+      required: true,
     },
+    
 })
 const Admin = mongoose.model("adminIds", AdminSchema);
 module.exports = Admin;

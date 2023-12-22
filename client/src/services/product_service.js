@@ -19,7 +19,6 @@ export const createProduct = async (
       response,
       id,
       refreshToken,
-      history,
       dispatch
     );
     console.log(handledResponse);
@@ -34,7 +33,6 @@ export const createProduct = async (
           "",
           id,
           refreshToken,
-          history,
           dispatch
         );
         if (handledResponse?.status === 200)
@@ -54,13 +52,15 @@ export const createProduct = async (
   }
 };
 
-export const getProducts = async (
-  page,
-  categories,
-  sort
-) => {
+export const getProducts = async (page, categories, sort, searchText) => {
   try {
-    const response = await callProductApi.get(`/?page=${page}&category=${categories}&sort=${sort?.id}&order=${sort?.order}`);
+    const response = await callProductApi.get(
+      `/?page=${page}&category=${
+        categories?.length > 0 ? categories : undefined
+      }&sort=${sort?.id}&order=${sort?.order}&search=${
+        searchText !== null ? searchText : undefined
+      }`
+    );
     if (response.status === 200) {
       return response;
     } else {
@@ -71,14 +71,11 @@ export const getProducts = async (
   }
 };
 
-export const getProductsById = async (
-  page,
-  productId,
-  categories,
-  sort
-) => {
+export const getProductsById = async (page, productId, categories, sort) => {
   try {
-    const response = await callProductApi.get(`/${productId}?page=${page}&category=${categories}&sort=${sort?.id}&order=${sort?.order}`);
+    const response = await callProductApi.get(
+      `/${productId}?page=${page}&category=${categories}&sort=${sort?.id}&order=${sort?.order}`
+    );
     if (response?.status === 200) {
       return response;
     } else return response.message;
@@ -88,39 +85,79 @@ export const getProductsById = async (
 };
 export const getProductsByUserId = async (
   page,
-  sellerId
+  sellerId,
+  accessToken,
+  refreshToken,
+  dispatch
 ) => {
   try {
     const response = await callProductApi.get(
-      `/seller-product/${sellerId}?page=${page}`
+      `/seller-product/${sellerId}?page=${page}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
     );
-    if (response?.status === 200) {
-      return response;
-    } else return response.message;
+    const handledResponse = await authService.handleApiResponse(
+      response,
+      sellerId,
+      refreshToken,
+      dispatch
+    );
+
+    if (handledResponse?.status === 200) {
+      return handledResponse;
+    }
   } catch (err) {
+    if (err?.response?.status === 401) {
+      try {
+        const handledResponse = await authService.handleApiResponse(
+          "",
+          sellerId,
+          refreshToken,
+          dispatch
+        );
+        if (handledResponse?.status === 200)
+          return await getProductsByUserId(
+            page,
+            sellerId,
+            handledResponse.data.accessToken,
+            handledResponse.data.refreshToken,
+            dispatch
+          );
+        return handledResponse;
+      } catch (error) {
+        return error;
+      }
+    }
     return err;
   }
 };
-
-export const updateProduct = async (
+export const updateProductStatus = async (
   productId,
-  productData,
+  flied,
+  statusCode,
   id,
   accessToken,
   refreshToken,
   dispatch
 ) => {
   try {
-    const response = await callProductApi.put(`/${productId}`, productData, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    console.log(accessToken);
+    const response = await callProductApi.put(
+      `/admin/${productId}?field=${flied}`,
+      { statusCode: statusCode },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
     const handledResponse = await authService.handleApiResponse(
       response,
       id,
       refreshToken,
-      history,
       dispatch
     );
 
@@ -134,7 +171,59 @@ export const updateProduct = async (
           "",
           id,
           refreshToken,
-          history,
+          dispatch
+        );
+        if (handledResponse?.status === 200)
+          return await updateProductStatus(
+            productId,
+            statusCode,
+            id,
+            handledResponse.data.accessToken,
+            handledResponse.data.refreshToken,
+            dispatch
+          );
+        return handledResponse;
+      } catch (error) {
+        return error;
+      }
+    }
+    return err;
+  }
+};
+export const updateProduct = async (
+  productId,
+  productData,
+  id,
+  accessToken,
+  refreshToken,
+  dispatch
+) => {
+  try {
+    console.log(accessToken);
+
+    // console.log(productData)
+    const response = await callProductApi.put(`/${productId}`, productData, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const handledResponse = await authService.handleApiResponse(
+      response,
+      id,
+      refreshToken,
+      dispatch
+    );
+
+    if (handledResponse?.status === 200) {
+      return handledResponse;
+    }
+  } catch (err) {
+    if (err?.response?.status === 401) {
+      try {
+        const handledResponse = await authService.handleApiResponse(
+          "",
+          id,
+          refreshToken,
           dispatch
         );
         if (handledResponse?.status === 200)
@@ -172,7 +261,7 @@ export const deleteProduct = async (
       response,
       id,
       refreshToken,
-      history,
+
       dispatch
     );
 
@@ -186,7 +275,7 @@ export const deleteProduct = async (
           "",
           id,
           refreshToken,
-          history,
+
           dispatch
         );
         if (handledResponse?.status === 200)

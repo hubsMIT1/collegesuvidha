@@ -1,103 +1,99 @@
 import React from "react";
 import { useFormik } from "formik";
-import { Link, useNavigate} from "react-router-dom";
-import { callAuthApi,config} from "../utils/CallApi";
-import { useDispatch, useSelector } from 'react-redux';
-import { loginSuccess, logout } from '../redux/authData/authAction';
-import { history } from '../_helpers/history';
-// import { fetchUserData } from '../redux/userData/userAction';
-import cookie from 'cookie';
-import axios from "axios";
-import { setUserDataStore } from "../redux/allAction";
+import { Link, useNavigate } from "react-router-dom";
+import { callAuthApi, config } from "../utils/CallApi";
+import { useDispatch, useSelector } from "react-redux";
+import { history } from "../_helpers/history";
+
+import { setAuthStore, setUserDataStore } from "../redux/allAction";
+import authService from "../services/auth_service";
 
 function MyForm(props) {
-  
-const navigate = useNavigate()
-const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-const validate = (values) => {
-  const errors = {};
+  const validate = (values) => {
+    const errors = {};
 
-  /* validating first name */
-  if (!values.firstName && props?.signup) {
-    errors.firstName = "First name is required";
-  } else if (values.firstName.length < 1  && props?.signup) {
-    errors.firstName = "Invalid First name";
-  } else {
-    errors.firstName = null;
-  }
-
-  /* validating last name */
-  // if (!values.lastName) {
-  //   errors.lastName = "Last name is required";
-  // } else 
-  // if (values.lastName.length < 1) {
-  //   errors.lastName = "Invalid Last name";
-  // } else {
-  //   errors.lastName = "Awesome last name 😁";
-  // }
-
-  /* validating email using regex to pass email */
-  if (!values.email) {
-    errors.email = "Email address is required";
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-    errors.email = null;
-  }
-
-  /* validating passwords */
-  if (!values.password) {
-    errors.password = "Password is required";
-  } else if (values.password.length <= 6) {
-    errors.password = "Password length is weak 😩";
-  } else {
-    errors.password =null;
-  }
-
-  /* validating password verification with initial */
-  if (!values.confirmPassword  && props?.signup) {
-    errors.confirmPassword = "Invalid password verification";
-  } else if (values.confirmPassword !== values.password  && props?.signup) {
-    errors.confirmPassword = "Passwords don't match 😟";
-  } else {
-    errors.confirmPassword = null;
-  }
-
-  // return errors;
-  console.log(errors)
-  if(errors?.confirmPassword || errors.email || errors?.firstName || errors.password ) return errors;
-};
-
-// const { isAuthenticated, accessToken, refreshToken } = useSelector((state) => state.auth);
-// console.log(accessToken)
-
-const onSubmit = async (values,{ resetForm }) => {
- 
-  try {
-    const route = props?.signup ? 'register':'login';
-    const {email,password} = values;
-    console.log(config)
-    const data = props?.signup ? values:{email,password};
-    console.log(data);
-    // const response = await axios.post('http://localhost:3001/auth/login', 
-    const response = await axios.post('http://localhost:3001/auth/login', data, {
-      withCredentials: true, // equivalent to credentials: 'include'
-      headers: {
-        'Content-Type': 'application/json',
-      },
-});
-    if (response.status === 200) {
-        setUserDataStore(response.data,dispatch)
-      const { from } = history.location.state || { from: { pathname: '/' } };
-      history.navigate(from);
-      // navigate('/');
+    /* validating first name */
+    if (!values.firstName && props?.signup) {
+      errors.firstName = "First name is required";
+    } else if (values.firstName.length < 1 && props?.signup) {
+      errors.firstName = "Invalid First name";
     } else {
-      console.error("Registration failed:", response.data);
+      errors.firstName = null;
     }
-  } catch (error) {
-    console.error("Error during registration:", error);
-  }
-  // return values;
-}
+
+    if (!values.email) {
+      errors.email = "Email address is required";
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+    ) {
+      errors.email = null;
+    }
+
+    /* validating passwords */
+    if (!values.password) {
+      errors.password = "Password is required";
+    } else if (values.password.length <= 6) {
+      errors.password = "Password length is weak 😩";
+    } else {
+      errors.password = null;
+    }
+
+    /* validating password verification with initial */
+    if (!values.confirmPassword && props?.signup) {
+      errors.confirmPassword = "Invalid password verification";
+    } else if (values.confirmPassword !== values.password && props?.signup) {
+      errors.confirmPassword = "Passwords don't match 😟";
+    } else {
+      errors.confirmPassword = null;
+    }
+
+    // return errors;
+    console.log(errors);
+    if (
+      errors?.confirmPassword ||
+      errors.email ||
+      errors?.firstName ||
+      errors.password
+    )
+      return errors;
+  };
+
+  // const { isAuthenticated, accessToken, refreshToken } = useSelector((state) => state.auth);
+  // console.log(accessToken)
+
+  const onSubmit = async (values, { resetForm }) => {
+    try {
+      const route = props?.signup ? "register" : "login";
+      const { email, password } = values;
+      console.log(config);
+      const data = props?.signup ? values : { email, password };
+      console.log(data);
+      // const response = await axios.post('http://localhost:3001/auth/login',
+      //     const response = await axios.post('http://localhost:3001/auth/login', data, {
+      //       withCredentials: true, // equivalent to credentials: 'include'
+      //       headers: {
+      //         'Content-Type': 'application/json',
+      //       },
+      // });
+      const from = history.location?.state?.from || { pathname: "/" };
+      const response = await authService.handleRegistration(route, data);
+      if (response.status === 200) {
+        // console.log(response.data)
+        setAuthStore(response.data, dispatch);
+        // setUserDataStore(response.data,dispatch)
+        navigate(from);
+        // navigate('/');
+      } else {
+        console.error("Registration failed:", response.data);
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+    }
+    // return values;
+  };
 
   console.log(props?.login, props?.signup);
   const formik = useFormik({
@@ -109,7 +105,7 @@ const onSubmit = async (values,{ resetForm }) => {
       confirmPassword: "",
     },
     validate,
-    onSubmit
+    onSubmit,
   });
   // console.log('Formik values:', formik.values);
   return (
@@ -212,7 +208,8 @@ const onSubmit = async (values,{ resetForm }) => {
             </div>
             {props?.signup ? (
               <div>
-                {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
+                {formik.touched.confirmPassword &&
+                formik.errors.confirmPassword ? (
                   <div className="block text-sm font-semibold text-red-500">
                     {" "}
                     *{formik.errors.confirmPassword}
@@ -243,12 +240,13 @@ const onSubmit = async (values,{ resetForm }) => {
 
           {props?.signup && (
             <div className="text-center text-sm text-grey-dark mt-4">
-              By signing up, you agree to the 
+              By signing up, you agree to the
               <Link
                 className="no-underline border-b border-grey-dark text-grey-dark"
                 to={"#"}
               >
-               {" "} Terms of Service
+                {" "}
+                Terms of Service
               </Link>{" "}
               and{" "}
               <Link
@@ -266,7 +264,9 @@ const onSubmit = async (values,{ resetForm }) => {
               <Link
                 to="/auth/login"
                 className="font-medium text-purple-600 hover:underline"
-                onClick={()=>{formik.resetForm();}}
+                onClick={() => {
+                  formik.resetForm();
+                }}
               >
                 Log in
               </Link>
@@ -278,7 +278,9 @@ const onSubmit = async (values,{ resetForm }) => {
               <Link
                 to="/auth/signup"
                 className="font-medium text-purple-600 hover:underline"
-                onClick={()=>{formik.resetForm();}}
+                onClick={() => {
+                  formik.resetForm();
+                }}
               >
                 Sign up
               </Link>

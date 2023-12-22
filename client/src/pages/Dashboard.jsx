@@ -4,23 +4,21 @@ import ProfileForm from "../components/Dashboard/ProfileDashboard";
 import ChatList from "../components/Dashboard/ChatList";
 // import { useParams,Link, BrowserRouter } from 'react-router-dom';
 import { HashLink } from "react-router-hash-link";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import { history } from "../_helpers/history";
-import { Navigate } from "react-router-dom";
+import {
+  Navigate,
+  useParams,
+  useLocation,
+  useNavigate,
+  Link,
+} from "react-router-dom";
 import { clearUserDataStore, logoutAuthStore } from "../redux/allAction";
 
 function Dashboard(props) {
-  // const {sec} = useParams()
+  const { section } = useParams();
 
-  const [hashId1, setHashId] = useState("profile");
-  const hashId = window.location.hash.slice(1);
-
-  useEffect(() => {
-    setHashId(hashId);
-  }, []);
-
-  console.log(hashId1);
-  const [activeSection, setActiveSection] = useState(hashId1 || "profile"); // Initial active section
+  const [activeSection, setActiveSection] = useState(section || "profile"); // Initial active section
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -30,35 +28,34 @@ function Dashboard(props) {
     profile: <ProfileSection />,
     productListing: <ProductListingSection />,
     chats: <ChatsSection />,
-    logout:<Logout />
+    logout: <Logout />,
   };
-
+  const navigate = useNavigate();
   const handleMenuClick = (section) => {
     setActiveSection(section);
+    navigate(`/dashboard/${section}`);
   };
   const menuItems = [
     {
-      id: "profile",
       label: "Profile",
-      to: "#profile",
+      to: "profile",
     },
     {
-      id: "productListing",
       label: "Product Listing",
-      to: "#productListing",
+      to: "productListing",
     },
     {
-      id: "chats",
       label: "Chats",
-      to: "#chats",
+      to: "chats",
     },
     {
-      id: "logout",
       label: "Logout",
-      to: "#logout",
+      to: "logout",
     },
   ];
-
+  useEffect(() => {
+    setActiveSection(section);
+  }, [section]);
   return (
     <div className="flex min-h-screen bg-gray-100 max-w-[1500px] m-auto">
       <aside
@@ -69,14 +66,14 @@ function Dashboard(props) {
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <ul className="mt-6 gap-5">
           {menuItems.map((item) => (
-            <li className="mb-2" key={item.id}>
+            <li className="mb-2" key={item.to}>
               <button
-                onClick={() => handleMenuClick(item.id)}
+                onClick={() => handleMenuClick(item.to)}
                 className={`w-full text-left font-semibold ${
-                  activeSection === item.id ? "text-blue-500" : "text-gray-300"
+                  activeSection === item.to ? "text-blue-500" : "text-gray-300"
                 }`}
               >
-                <HashLink to={item.to}>{item.label}</HashLink>
+                {item.label}
               </button>
             </li>
           ))}
@@ -99,25 +96,23 @@ function Dashboard(props) {
           <h2 className="text-xl font-semibold mb-4">Dashboard Sections</h2>
           <ul className="flex space-x-4">
             {menuItems.map((item) => (
-              <li key={item.id}>
-                <HashLink to={item.to}>
-                  <button
-                    onClick={() => handleMenuClick(item.id)}
-                    className={`text-lg font-semibold ${
-                      activeSection === item.id
-                        ? "text-blue-500"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                </HashLink>
+              <li key={item.to}>
+                <button
+                  onClick={() => handleMenuClick(item.to)}
+                  className={`text-lg font-semibold ${
+                    activeSection === item.to
+                      ? "text-blue-500"
+                      : "text-gray-500"
+                  }`}
+                >
+                  {item.label}
+                </button>
               </li>
             ))}
           </ul>
         </section>
 
-        <section className="mb-8">{sections[activeSection]}</section>
+        <section className="mb-8">{sections[section]}</section>
       </main>
     </div>
   );
@@ -146,14 +141,14 @@ function ChatsSection() {
     </div>
   );
 }
-function Logout(){
-    const dispatch = useDispatch();
-    clearUserDataStore(dispatch);
-    logoutAuthStore(dispatch)
-    history.navigate = null;
-    history.location  = null;
-    return <Navigate login={true} to="/auth/login" />
-    
-  }
+function Logout() {
+  const dispatch = useDispatch();
+  clearUserDataStore(dispatch);
+  logoutAuthStore(dispatch);
+
+  history.navigate = null;
+  history.location = null;
+  return <Navigate login={true} to="/auth/login" />;
+}
 
 export default Dashboard;

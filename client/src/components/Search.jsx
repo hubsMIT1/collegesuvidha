@@ -1,6 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 function Search() {
+  const navigate = useNavigate();
+  const [searchInput, setSearchInput] = useState();
+  const handleSearch = () => {
+    navigate(`/allproducts?search=${searchInput}`);
+  };
   return (
     <div className="w-[100%]">
       <div className="flex items-center h-10 bg-purple-400 rounded" type="text">
@@ -16,8 +22,12 @@ function Search() {
         <input
           className="flex grow items-center h-[100%] rounded-l text-black"
           type="text"
+          value={searchInput}
+          onChange={(e) => {
+            setSearchInput(e.target.value);
+          }}
         />
-        <button className="w-[45px]">
+        <button className="w-[45px]" onClick={handleSearch}>
           <FaSearch className="h-[27px] m-auto stroke-slate-900" />
         </button>
       </div>

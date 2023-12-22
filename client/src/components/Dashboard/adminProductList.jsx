@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
 import { PencilIcon } from "@heroicons/react/24/solid";
+// import { Switch, FormControlLabel, Select, MenuItem } from '@material-ui/core';
+
 import {
   ArrowDownTrayIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 import {
   Card,
+  Switch,
+  FormControlLabel,
+  Select,
+  MenuItem,
+  Option,
   CardHeader,
   Typography,
   Button,
@@ -17,7 +24,11 @@ import {
   Tooltip,
   Input,
 } from "@material-tailwind/react";
-import { getProductsByUserId } from "../../services/product_service";
+import {
+  getProductsByUserId,
+  updateProduct,
+  updateProductStatus,
+} from "../../services/product_service";
 import { useDispatch, useSelector } from "react-redux";
 import Pagination from "../Pagination";
 import { formatDistanceToNow, format } from "date-fns";
@@ -28,18 +39,24 @@ const TABLE_HEAD = [
   "Expiration Data",
   "Uploaded Date",
   "Status",
+  "Featured",
   "Edit",
   "Delete",
 ];
 
-export function ListedProduct() {
+export function AdminProductList() {
   const [loading, setLoading] = useState(false);
   const [productList, setProductList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [err, setError] = useState(null);
   const [page, setPage] = useState(1);
-  const { userId } = useSelector((state) => state.auth);
+
+  const { userData } = useSelector((state) => state.user);
+  const { isAuthenticated, accessToken, refreshToken, userId } = useSelector(
+    (state) => state.auth
+  );
+  const dispatch = useDispatch();
   // console.log(userData)
   const itemsPerPage = 18;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -58,7 +75,13 @@ export function ListedProduct() {
     try {
       let data;
 
-      data = await getProductsByUserId(currentPage, userId);
+      data = await getProductsByUserId(
+        currentPage,
+        userId,
+        accessToken,
+        refreshToken,
+        dispatch
+      );
 
       if (data.status === 200) {
         console.table(data.data.products);
@@ -78,9 +101,87 @@ export function ListedProduct() {
     handleGetProducts();
   }, [currentPage]); //selectedCategories,currentPage
   const navigate = useNavigate();
+
   const handleEditProduct = (product) => {
     const editUrl = `/addproduct?edit=${product?._id}`;
     navigate(editUrl, { state: { product } });
+  };
+
+  const [editedProduct, setEditedProduct] = useState({
+    isPublish: 0,
+    isFeatured: false,
+  });
+
+  const handlePublishStatusChange = async (e, id) => {
+    // const newPublishStatus = parseInt(event.target.value, 10);
+    console.log(e, editedProduct, id);
+    await updateProductStatus(
+      id,
+      "status",
+      e,
+      userId,
+      accessToken,
+      refreshToken,
+      dispatch
+    )
+      .then((res) => {
+        if (res.status === 200) {
+          setEditedProduct((prevProduct) => ({
+            ...prevProduct,
+            isPublish: res?.data?.status,
+          }));
+          console.log("Status changed successfully");
+        } else {
+          console.log(res?.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error updating product:", error?.message);
+      });
+  };
+
+  const handleFeaturedChange = async (event, id, index) => {
+    const newIsFeatured = event.target.checked;
+    // console.log(e,editedProduct,id)
+    await updateProductStatus(
+      id,
+      "featured",
+      newIsFeatured,
+      userId,
+      accessToken,
+      refreshToken,
+      dispatch
+    )
+      .then((res) => {
+        // console.log(res)
+        if (res.status === 200) {
+          setEditedProduct((prevProduct) => ({
+            ...prevProduct,
+            isFeatured: res?.data?.status,
+          }));
+          setProductList((prevProd) => {
+            const updatedProductList = [...prevProd];
+            const updatedProduct = {
+              ...updatedProductList[index],
+              isFeatured: res?.data?.status,
+            };
+            updatedProductList[index] = updatedProduct;
+            return updatedProductList;
+          });
+
+          console.log("Feature changed successfully");
+        } else {
+          console.log(res?.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error updating product:", error?.message);
+      });
+
+    console.log(newIsFeatured, editedProduct);
+
+    // Call your update function or dispatch action here
+    // e.g., updateProductIsFeatured(newIsFeatured);
   };
   return (
     <Card className="h-full w-full">
@@ -178,29 +279,31 @@ export function ListedProduct() {
                       {format(new Date(product?.updatedAt), "d/MM/yyyy")}
                     </Typography>
                   </td>
-                  <td className={classes}>
-                    <div className="w-max">
-                      <Chip
-                        size="sm"
-                        variant="ghost"
-                        value={
-                          product?.isPublish === 0
-                            ? "Pending"
-                            : product?.isPublish === 1
-                            ? "Published"
-                            : "Cancelled"
+                  <td className="p-1">
+                    <div className="w-min">
+                      <Select
+                        value={product?.isPublish}
+                        onChange={(e) =>
+                          handlePublishStatusChange(e, product?._id)
                         }
-                        color={
-                          product?.isPublish === 1
-                            ? "green"
-                            : product?.isPublish === 0
-                            ? "amber"
-                            : "red"
-                        }
-                      />
+                        size="md"
+                      >
+                        <Option value={0}>Pending</Option>
+                        <Option value={1}>Published</Option>
+                        <Option value={-1}>Cancelled</Option>
+                      </Select>
                     </div>
                   </td>
 
+                  <td>
+                    <Switch
+                      checked={product?.isFeatured}
+                      onChange={(e) =>
+                        handleFeaturedChange(e, product?._id, index)
+                      }
+                      color="secondary"
+                    />
+                  </td>
                   <td className={classes}>
                     <Tooltip content="Edit Product">
                       <Link

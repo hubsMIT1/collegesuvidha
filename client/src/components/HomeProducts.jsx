@@ -6,13 +6,14 @@ import { setProductStore } from "../redux/allAction";
 function HomePageProducts() {
   const [loading, setLoading] = useState(false);
   const [err, setError] = useState(null);
-
+  const [homeProducts, setHomeProducts] = useState();
   const dispatch = useDispatch();
   const handleGetProduct = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const productResults = await getProducts(1);
       if (productResults.status === 200) {
+        setHomeProducts(productResults?.data?.products);
         setProductStore(productResults.data.products, dispatch);
       } else {
         setError(productResults.message);
@@ -25,9 +26,10 @@ function HomePageProducts() {
   };
 
   useEffect(() => {
-    if(!loading)
+    // if(!loading)
     handleGetProduct();
   }, []);
+  if (err?.length > 0) return <h1 className="text-red-600">{err.message}</h1>;
   return (
     <div>
       <div className="flex justify-center  mb-5">
@@ -38,10 +40,13 @@ function HomePageProducts() {
 
       {loading ? (
         <h1>Loading...</h1>
-      ) : err ? (
-        <h1 className="text-red-600">{err.message}</h1>
       ) : (
-        <ProductList loading={loading} pagi={false} viewBtn={true} />
+        <ProductList
+          homeProducts={homeProducts}
+          loading={loading}
+          pagi={false}
+          viewBtn={true}
+        />
       )}
     </div>
   );

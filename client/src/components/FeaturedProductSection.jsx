@@ -7,31 +7,30 @@ import { setProductStore } from "../redux/allAction";
 function FeaturedSection() {
   const [loading, setLoading] = useState(false); // Initialize loading to true
   const [err, setError] = useState(null);
-
+  const [featuredProduct, setFeaturedProduct] = useState();
   const dispatch = useDispatch();
   const handleGetProduct = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       // changed the when api get if featured then fetch  with some limit....
-      
+
       const productResults = await getProducts(1);
       if (productResults.status === 200) {
         // console.log(productResults)
+        setFeaturedProduct(productResults.data.products);
         setProductStore(productResults.data.products, dispatch);
       } else {
         setError(productResults.message);
       }
-    } catch (err){
+    } catch (err) {
       setError(err.message);
-    } 
-    finally{
+    } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if(!loading)
-      handleGetProduct();
+    handleGetProduct();
   }, []);
   // console.log(products)
   return (
@@ -47,7 +46,12 @@ function FeaturedSection() {
       ) : err ? (
         <h1 className="text-red-600">{err.message}</h1>
       ) : (
-        <ProductList loading={loading} isFeatured={true} pagi={false} />
+        <ProductList
+          featuredProduct={featuredProduct}
+          loading={loading}
+          isFeatured={true}
+          pagi={false}
+        />
       )}
     </div>
   );

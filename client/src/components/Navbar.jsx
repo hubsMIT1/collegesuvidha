@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CS_logo from "../assets/header_logo.png";
 import { FaBars, FaPlus, FaSignInAlt, FaUser } from "react-icons/fa";
 import Search from "./Search";
@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 import { Avatar } from "@material-tailwind/react";
 import { useDispatch, useSelector } from "react-redux";
+import authService from "../services/auth_service";
 
 import SideBar from "./SideBar";
 function Navbar() {
@@ -13,11 +14,42 @@ function Navbar() {
     (state) => state.auth
   );
 
+  const { userData } = useSelector((state) => state.user);
+  console.log(isAuthenticated, userData);
+  const dispatch = useDispatch();
+
+  const fetchUserData = async () => {
+    console.log("api backend userdata");
+
+    if (isAuthenticated && !userData) {
+      try {
+        console.log(userData);
+
+        await authService.userData(userId, accessToken, refreshToken, dispatch);
+
+        // console.log(response)
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+  useEffect(() => {
+    // document.addEventListener('load',fetchUserData);
+    // return ()=>{
+    //   document.removeEventListener('click',fetchUserData)
+    // }
+    if (isAuthenticated) fetchUserData();
+  }, [isAuthenticated]);
+
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const navHeadings = [
     { name: "Home", link: "/", type: "text" },
     { name: "All Product", link: "/allproducts", type: "text" },
-    {name:"Your Product",link: `/allproducts/${userId}`, type: "text" }
+    {
+      name: "Your Product",
+      link: `/dashboard/your-products/${userId}`,
+      type: "text",
+    },
   ];
 
   return (
@@ -59,7 +91,7 @@ function Navbar() {
             </div>
             {isAuthenticated && (
               <div className="pr-4 pl-4">
-                <Link to={`/allproducts/:${userId}`}>
+                <Link to={`/dashboard/your-products/${userId}`}>
                   {" "}
                   <div className="text-xs xl:text-sm  cursor-pointer">
                     Your Product
@@ -70,16 +102,18 @@ function Navbar() {
           </div>
           <div className="pr-4 pl-1">
             {isAuthenticated ? (
-              <Link to={`/dashboard/#profile`} className="flex justify-center items-center gap-1">
-               
-                  <Avatar
-                    size="sm"
-                    variant="circular"
-                    alt="shivay"
-                    className=" border-2 border-white "
-                    src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
-                  />
-                    <span>Hi, Shivay </span>
+              <Link
+                to={`/dashboard/profile`}
+                className="flex justify-center items-center gap-1"
+              >
+                <Avatar
+                  size="sm"
+                  variant="circular"
+                  alt="shivay"
+                  className=" border-2 border-white "
+                  src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
+                />
+                <span>Hi, {userData?.firstName} </span>
               </Link>
             ) : (
               <Link
@@ -110,9 +144,10 @@ function Navbar() {
       </div>
       <div className="flex bg-purple-400 text-white space-x-3 text-xs xl:text-sm p-2 pl-6">
         <Link to={`/seller/1`}>Seller</Link>
-        <Link to={`/dashboard/#profile`}>Your Products</Link>
-        <Link to={`/dashboard/#chats`}>Chats</Link>
+        <Link to={`/dashboard/your-products/${userId}`}>Your Products</Link>
+        <Link to={`/dashboard/chats`}>Chats</Link>
         <Link to={`/auth/signup`}>Sign Up</Link>
+        <Link to="dashboard/admin/products-list"> Admin Dashboard</Link>
       </div>
       {mobileFiltersOpen && (
         <SideBar
