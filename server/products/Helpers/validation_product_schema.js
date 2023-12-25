@@ -10,7 +10,11 @@ const productSchema = Joi.object({
   zipCode: Joi.string().min(0).max(20),
   // images: Joi.array().items(Joi.string()), // Assuming images are strings (file paths)
   // imagess: Joi.array().items(Joi.string().base64({ paddingRequired: true })),
-  imagess: Joi.array().items(Joi.string().dataUri().max(1000000))
+  imagess: Joi.alternatives().try(
+    Joi.array().items(Joi.string().dataUri().max(1000000)),
+    Joi.string().dataUri().max(1000000)
+  )
+  
 });
 
 module.exports = { productSchema };

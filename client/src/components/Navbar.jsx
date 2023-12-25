@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CS_logo from "../assets/header_logo.png";
-import { FaBars, FaPlus, FaSignInAlt, FaUser } from "react-icons/fa";
+import { FaBars, FaPlus, FaSignInAlt, FaUser,FaUserCircle } from "react-icons/fa";
 import Search from "./Search";
 import { Link } from "react-router-dom";
 
@@ -10,11 +10,11 @@ import authService from "../services/auth_service";
 
 import SideBar from "./SideBar";
 function Navbar() {
-  const { isAuthenticated, accessToken, refreshToken, userId } = useSelector(
+  const { isAuthenticated, accessToken, refreshToken, userId} = useSelector(
     (state) => state.auth
   );
-
   const { userData } = useSelector((state) => state.user);
+
   console.log(isAuthenticated, userData);
   const dispatch = useDispatch();
 
@@ -106,12 +106,9 @@ function Navbar() {
                 to={`/dashboard/profile`}
                 className="flex justify-center items-center gap-1"
               >
-                <Avatar
-                  size="sm"
-                  variant="circular"
-                  alt="shivay"
-                  className=" border-2 border-white "
-                  src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
+                <FaUserCircle
+                  size='30'                
+                  // className=" border-2 border-white round"
                 />
                 <span>Hi, {userData?.firstName} </span>
               </Link>
@@ -142,13 +139,16 @@ function Navbar() {
       <div className="flex md:hidden lg:hidden xl:hidden">
         <Search />
       </div>
+      { isAuthenticated && 
       <div className="flex bg-purple-400 text-white space-x-3 text-xs xl:text-sm p-2 pl-6">
-        <Link to={`/seller/1`}>Seller</Link>
+        
         <Link to={`/dashboard/your-products/${userId}`}>Your Products</Link>
         <Link to={`/dashboard/chats`}>Chats</Link>
-        <Link to={`/auth/signup`}>Sign Up</Link>
-        <Link to="dashboard/admin/products-list"> Admin Dashboard</Link>
+        {/* <Link to={`/auth/signup`}>Sign Up</Link> */}
+        {userData?.isAdmin && <Link to="/auth/add-new-admin"> Add Admins </Link>}
+        {userData?.isAdmin && <Link to="/dashboard/admin/products-list"> Admin Dashboard</Link>}
       </div>
+      }
       {mobileFiltersOpen && (
         <SideBar
           isMobile={mobileFiltersOpen}

@@ -5,6 +5,7 @@ import { setUserData, clearUserData } from "../redux/userData/userAction";
 import { createProduct, updateProduct } from "../services/product_service";
 import { useLocation, useNavigate } from "react-router-dom";
 import { select } from "@material-tailwind/react";
+import { categories } from "../utils/constants";
 
 function ProductForm(props) {
   const location = useLocation();
@@ -46,7 +47,7 @@ function ProductForm(props) {
       .then((base64Images) => {
         setProductData((prevData) => ({
           ...prevData,
-          images: [...prevData.images, ...base64Images],
+             images: [...prevData.images, ...base64Images]
         }));
       })
       .catch((error) => {
@@ -92,17 +93,18 @@ function ProductForm(props) {
         formData.append(key, value);
       }
     });
+    console.log(formData);
 
     await createProduct(formData, userId, accessToken, refreshToken, dispatch)
       .then((res) => {
         // Handle the new product data as needed
         // console.log(res)
         console.log("New product created:", res?.data?.message);
-        if (res.status === 200) {
-          navigate(`/dashboard/productListing`);
-          editProduct = null;
-          setProductData(initialValues);
-        }
+        // if (res.status === 200) {
+        //   navigate(`/dashboard/productListing`);
+        //   editProduct = null;
+        //   setProductData(initialValues);
+        // }
       })
       .catch((error) => {
         console.error("Error creating product:", error);
@@ -145,7 +147,7 @@ function ProductForm(props) {
           updatedProduct?.response?.data?.message
         );
         if (updatedProduct.status === 200) {
-          navigate(`/productDetails/${updatedProduct?.data?._id}/1`);
+          navigate(`/product-details/${updatedProduct?.data?._id}`);
           editProduct = null;
           location.state = null;
           setProductData(initialValues);
@@ -228,9 +230,15 @@ function ProductForm(props) {
                 required
               >
                 <option value="">Select Category</option>
-                <option value="cycle">Cycle</option>
-                <option value="mattress">Mattress</option>
-                <option value="kattle">Kattle</option>
+              { 
+                categories?.map((category,index)=>(
+                  <option key={index} value={category}>{category}</option>
+                ))
+              }
+                
+                
+                {/* <option value="mattress">Mattress</option>
+                <option value="kattle">Kattle</option> */}
 
                 {/* Add more category options */}
               </select>

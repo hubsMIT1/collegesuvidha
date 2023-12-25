@@ -35,7 +35,7 @@ const ProfileForm = () => {
     // }
     if (isAuthenticated) fetchUserData();
   }, [isAuthenticated]);
-
+console.log(userData)
   useEffect(() => {
     formik.setValues({
       firstName: userData?.firstName || "",

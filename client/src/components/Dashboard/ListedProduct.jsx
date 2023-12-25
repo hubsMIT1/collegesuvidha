@@ -39,13 +39,16 @@ export function ListedProduct() {
   const [totalPage, setTotalPage] = useState(1);
   const [err, setError] = useState(null);
   const [page, setPage] = useState(1);
-  const { userId } = useSelector((state) => state.auth);
-  // console.log(userData)
+    // console.log(userData)
   const itemsPerPage = 18;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   // const totalPages = props?.totalPages
   // console.log(totalPages)
+  const { isAuthenticated, accessToken, refreshToken, userId } = useSelector(
+    (state) => state.auth
+  );
+  const dispatch = useDispatch();
   const handlePageChange = (page) => {
     setPage(page);
   };
@@ -58,7 +61,7 @@ export function ListedProduct() {
     try {
       let data;
 
-      data = await getProductsByUserId(currentPage, userId);
+      data = await getProductsByUserId(currentPage, userId,accessToken,refreshToken,dispatch);
 
       if (data.status === 200) {
         console.table(data.data.products);
@@ -150,7 +153,7 @@ export function ListedProduct() {
                         className="font-bold"
                       >
                         <Link
-                          to={`/productDetails/${product?._id}/${index}`}
+                          to={`/product-details/${product?._id}?index=${index}`}
                           target="_blank"
                         >
                           {" "}

@@ -98,6 +98,9 @@ const FilterSection = React.memo(function FilterSection(props) {
       }
     });
   }
+  const { isAuthenticated, accessToken, refreshToken, userId } = useSelector(
+    (state) => state.auth
+  ); 
   console.log(updatedSortOptions);
   const [selectedCategories, setSelectedCategories] = useState(
     categoryParam ? categoryParam.split(",") : []
@@ -167,11 +170,16 @@ const FilterSection = React.memo(function FilterSection(props) {
     try {
       let data;
       if (props?.seller) {
+        if(!isAuthenticated)navigate('/allproducts');
         data = await getProductsByUserId(
           currentPage,
           sellerId,
+          accessToken,
+          refreshToken,
+          dispatch,
           selectedCategories,
-          sorts
+          sorts,
+          searchParam
         );
       } else {
         data = await getProducts(
@@ -223,7 +231,7 @@ const FilterSection = React.memo(function FilterSection(props) {
           getCategories();
         }
         // navigate(`/allproduct?category=${selectedCategories.join(',')}&sort=${sorts.id}&page=${currentPage}`);
-      } else setError(data);
+      } else setError(data?.message);
     } catch (err) {
       setError(err);
     } finally {

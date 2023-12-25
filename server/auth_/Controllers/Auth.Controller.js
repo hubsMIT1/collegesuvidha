@@ -12,14 +12,20 @@ const {
   authLoginSchema,
   updateProfileSchema,
 } = require("../helpers/validation_schema");
-
+const Admin = require('../admin/Admin.Model')
 module.exports = {
   userData: async (req, res, next) => {
     id = req.params.id;
     const user = await User.findOne({_id:id });
     if (!user) throw createError.NotFound("User not registered");
     // console.log(user)
-    res.send(user);
+    const admin = await Admin.findOne({ adminId: id});
+    const isAdminId = admin ? true : false;
+    const ret = {firstName:user?.firstName, lastName:user?.lastName, email:user?.email,address:user?.address,contact:user?.contact};
+    if(isAdminId){
+      ret.isAdmin = true;
+    }
+    res.send(ret);
   },
   userSellerData: async(req,res,next)=>{
     id = req.params.id;
@@ -27,7 +33,9 @@ module.exports = {
 
       const seller = await User.findOne({_id:id});
       if (!seller) throw createError.NotFound("User not registered");
-      res.send({firstName:seller.firstName, lastName:seller.lastName, about:seller?.about});
+
+      res.send(seller);
+
     }catch(err){
       next(err);
     }
@@ -78,10 +86,16 @@ module.exports = {
       const refreshToken = await signRefreshToken(user.id);
       const userId = user.id;
       res.clearCookie('refreshToken', { path: `/auth/refresh-token/${userId}` });
+      const admin = await Admin.findOne({ adminId: userId});
+      const isAdminId = admin ? true : false;
+      const ret = { accessToken,refreshToken, userId };
+      if(isAdminId){
+          ret.isAdmin = isAdminId;
+      }
       res.status(200)
       .cookie('refreshToken', refreshToken,
        {sameSite:'strict', httpOnly: false })
-      .send({ accessToken,refreshToken, userId });
+      .send(ret);
 
     } catch (error) {
       if (error.isJoi)
@@ -111,7 +125,13 @@ module.exports = {
       if (!updatedUser) {
         return next(createError.NotFound("User not found"));
       }
-      res.status(200).send(updatedUser);
+      const admin = await Admin.findOne({ adminId: id});
+    const isAdminId = admin ? true : false;
+    const ret = {firstName:updatedUser?.firstName, lastName:updatedUser?.lastName, email:updatedUser?.email,address:updatedUser?.address,contact:updatedUser?.contact};
+    if(isAdminId){
+      ret.isAdmin = true;
+    }
+      res.status(200).send(ret);
     } catch (error) {
       next(error);
     }

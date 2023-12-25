@@ -22,10 +22,11 @@ export default function OwnerCard(props) {
     async function fetchUserData() {
         try {
           const response = await authService.getSellerById(props?.userId);
-          // console.log(response)
+          console.log(response)
           if(response.status===200 && response?.data){
             // dispatch( setUserData(response.data) )
             // return ;
+            
             setSeller(response.data)
           }
         } catch (error) {
@@ -72,7 +73,7 @@ export default function OwnerCard(props) {
         </Button>
         <Button className="bg-green-500 text-white">
           <Link
-            to={`https://wa.me/9930813692/?text=Hello%20there!%20I%20am%20interested%20in%20your%20this%20product%20:%20http://localhost:3000/productDetails/${props?.prodId}/${props?.index}`}
+            to={`https://wa.me/${seller?.contact}/?text=Hello%20there!%20I%20am%20interested%20in%20your%20this%20product%20:%20http://www.localhost:3000/product-details/${props?.prodId}?index=${props?.index}`}
             target="_blank"
             rel="noopener noreferrer"
           >

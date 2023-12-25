@@ -2,14 +2,16 @@ const Product = require("../Models/Product.Model");
 const { productSchema } = require("../Helpers/validation_product_schema");
 const fs = require("fs");
 const { verifyAdmin } = require("../../auth_/admin/Admin");
-const validateProduct = (data) => {
-  return productSchema.validateAsync(data);
+const validateProduct = async (data) => {
+  return await productSchema.validateAsync(data);
 };
 const Admin = require("../../auth_/admin/Admin.Model");
+const createError = require("http-errors");
 
 const createProduct = async (req, res) => {
   try {
-    const { error } = validateProduct(req.body);
+    const { error } = await validateProduct(req.body);
+    // console.log(error);
     // console.log(req.body)
     // console.log(req?.payload);
     if (error) {
@@ -20,8 +22,8 @@ const createProduct = async (req, res) => {
     const { title, description, category, price, quantity, address, zipCode } =
       req.body;
     const userId = req?.payload?.aud;
-
-    const images = req.files;
+    const images = req.body?.imagess;
+    // console.log(req.body?.imagess)
     // req.files.map((file) => {
     //   const base64Image = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
 
@@ -55,8 +57,11 @@ const getProducts = async (req, res) => {
     const category = req.query.category;
     const sortField = req.query.sort || "createdAt";
     const sortOrder = parseInt(req.query.order) || -1;
+    const featured = parseInt(req.query?.isFeatured);
     const page = parseInt(req.query.page) || 1;
-    const pageSize = 18;
+    // let pageSize = 18;
+    const perPage = parseInt(req.query?.perpage) || 18;
+    const pageSize = perPage ? Math.min(perPage, 18) : 18;
 
     const query = {};
     // console.log(category,sortField,page)
@@ -81,13 +86,24 @@ const getProducts = async (req, res) => {
         { category: regex },
       ];
     }
+    if(featured)
+      console.log(featured,perPage);
 
     let totalProducts;
     // console.log(query,Object.keys(query).length)
     // Check if there is no category or search text, then give the first 18 elements
     if (!Object.keys(query).length) {
-      totalProducts = await Product.countDocuments();
+      cntQuery = {};
+      if (featured) {
+        cntQuery.isFeatured = featured;
+      }
+      cntQuery.isPublish = 1;
+      totalProducts = await Product.countDocuments(cntQuery);
     } else {
+      if (featured) {
+        query.isFeatured = featured;
+      }
+      query.isPublish = 1;
       totalProducts = await Product.countDocuments(query);
     }
 
@@ -95,11 +111,19 @@ const getProducts = async (req, res) => {
 
     // Check if there is no category or search text, then give the first 18 elements
     if (!Object.keys(query).length) {
-      products = await Product.find()
+      if (featured) {
+        query.isFeatured = featured;
+      }
+      query.isPublish = 1;
+      products = await Product.find(query)
         .sort({ [sortField]: sortOrder })
         .skip((page - 1) * pageSize)
         .limit(pageSize);
     } else {
+      if (featured) {
+        query.isFeatured = featured;
+      }
+      query.isPublish = 1;
       products = await Product.find(query)
         .sort({ [sortField]: sortOrder })
         .skip((page - 1) * pageSize)
@@ -129,6 +153,7 @@ const getProductsByUserId = async (req, res) => {
     const pageSize = 18; // Number of products per page
     const category = req.query.category;
     const sortOrder = parseInt(req.query.order) || -1;
+    const loggedId = req?.payload?.aud;
 
     // admin dashboard all recent product
     const admin = await Admin.findOne({ adminId: userId });
@@ -150,21 +175,40 @@ const getProductsByUserId = async (req, res) => {
       });
       // return;
       // next();
+    } else if (userId === loggedId) {
+      const totalProducts = await Product.countDocuments({ userId: userId });
+      const totalPages = Math.ceil(totalProducts / pageSize);
+
+      const products = await Product.find({ userId: userId })
+        .sort({ [sortField]: sortOrder })
+        .skip((page - 1) * pageSize)
+        .limit(pageSize);
+
+      return res.json({
+        products,
+        totalPages,
+        currentPage: page,
+        totalProducts: totalProducts,
+      });
     }
-    const totalProducts = await Product.countDocuments({ userId });
+    const totalProducts = await Product.countDocuments({
+      userId: userId,
+      isPublish: 1,
+    });
     const totalPages = Math.ceil(totalProducts / pageSize);
 
-    const products = await Product.find({ userId: userId })
+    const products = await Product.find({ userId: userId, isPublish: 1 })
       .sort({ [sortField]: sortOrder })
       .skip((page - 1) * pageSize)
       .limit(pageSize);
 
-    res.json({
+    return res.json({
       products,
       totalPages,
       currentPage: page,
       totalProducts: totalProducts,
     });
+    // return res.status(401).json({message:"You don't own these products!!"});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -226,41 +270,47 @@ const searchProducts = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-const updateProductStatus = async (req, res, next) => {
+const updateProductStatus = async (req, res) => {
   try {
     const userId = req.payload.aud;
     const productId = req.params.productId;
-    const admin = await Admin.findOne({ adminId: userId });
     const field = req.query.field;
-    // console.log(field)
     const { statusCode } = req.body;
+
+    const admin = await Admin.findOne({ adminId: userId });
     const isAdminId = admin ? true : false;
+
     if (!isAdminId) {
-      return res
-        .status(403)
-        .json({ message: "Unauthorized. You do not own this product." });
+      return res.status(403).json({ message: "Unauthorized. You do not own this product." });
     }
+
     const existingProduct = await Product.findById(productId);
+
     if (!existingProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
-    if (field === "status") {
+
+    let updatedField;
+    console.log(field,typeof(statusCode));
+    if (field === "status" && (statusCode==0 || statusCode==1)) {
       existingProduct["isPublish"] = statusCode;
-    } else if (field === "featured") {
+      updatedField = "isPublish";
+    } else if (field === "featured" && (statusCode==0 || statusCode==1)) {
       existingProduct["isFeatured"] = statusCode;
+      updatedField = "isFeatured";
     } else {
-      return res
-        .status(422)
-        .json({ message: "This field doesn't exit or can't update!!" });
+      return res.status(422).json({ message: "This field doesn't exist or can't be updated!!" });
     }
-    const updatedProduct = await existingProduct.save();
-    res
-      .status(200)
-      .send({ status: statusCode, message: "Updated Successfully" });
+
+    await existingProduct.save();
+
+    return res.status(200).json({ status: statusCode, field: updatedField, message: "Updated Successfully" });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 const updateProduct = async (req, res, next) => {
   try {
     const userId = req.payload.aud;
