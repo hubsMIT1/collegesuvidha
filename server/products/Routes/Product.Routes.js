@@ -19,6 +19,7 @@ const {
   verifyRefreshToken,
   verifyAccessToken,
 } = require("../../auth_/helpers/jwt_helper");
+const { verifyAdmin } = require("../../auth_/admin/Admin");
 
 router.get("/search", productController.searchProducts);
 router.post(
@@ -27,11 +28,13 @@ router.post(
   upload.array("imagess"),
   productController.createProduct
 );
+
 router.get("/", productController.getProducts);
 router.get("/:id", productController.getProductsById);
 router.put(
   "/admin/:productId",
   verifyAccessToken,
+  verifyAdmin,
   productController.updateProductStatus
 );
 router.get(

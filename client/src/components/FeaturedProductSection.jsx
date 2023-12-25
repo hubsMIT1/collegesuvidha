@@ -14,8 +14,9 @@ function FeaturedSection() {
     try {
       // changed the when api get if featured then fetch  with some limit....
 
-      const productResults = await getProducts(1);
+      const productResults = await getProducts(1,"","","",1,6);
       if (productResults.status === 200) {
+        console.log(productResults);
         // console.log(productResults)
         setFeaturedProduct(productResults.data.products);
         setProductStore(productResults.data.products, dispatch);

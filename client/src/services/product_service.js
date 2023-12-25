@@ -52,14 +52,14 @@ export const createProduct = async (
   }
 };
 
-export const getProducts = async (page, categories, sort, searchText) => {
+export const getProducts = async (page, categories, sort, searchText,featuredOnly,homeProduct) => {
   try {
     const response = await callProductApi.get(
       `/?page=${page}&category=${
         categories?.length > 0 ? categories : undefined
       }&sort=${sort?.id}&order=${sort?.order}&search=${
         searchText !== null ? searchText : undefined
-      }`
+      }&${featuredOnly===1 ? `isFeatured=${1}`:null}&perpage=${9}`
     );
     if (response.status === 200) {
       return response;
@@ -144,7 +144,7 @@ export const updateProductStatus = async (
   dispatch
 ) => {
   try {
-    console.log(accessToken);
+    // console.log(accessToken);
     const response = await callProductApi.put(
       `/admin/${productId}?field=${flied}`,
       { statusCode: statusCode },
@@ -176,6 +176,7 @@ export const updateProductStatus = async (
         if (handledResponse?.status === 200)
           return await updateProductStatus(
             productId,
+            flied,
             statusCode,
             id,
             handledResponse.data.accessToken,

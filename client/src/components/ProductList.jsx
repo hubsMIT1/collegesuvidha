@@ -10,25 +10,20 @@ const ProductList = (props) => {
   const itemsPerPage = 18;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const { productData } = useSelector((state) => state.productData);
+
+  const {productData} = useSelector((state) => state.productData);
+  
+  // Using props?.homeProducts if available, otherwise using productData from Redux
+  const currentProducts = props?.homeProducts !== undefined ? props.homeProducts : productData;
+
   const [currentItems, setCurrentItems] = useState();
-
+  
+  // if(productData===undefined)setCurrentItems(saveProduct);
   useEffect(() => {
-    setCurrentItems(productData);
-  }, [productData]);
+    setCurrentItems(currentProducts);
+  }, [currentProducts]);
 
-  // console.log(useSelector((state) => state.productData))
-  // console.log(productData);
-  // useEffect(() => {
-  //   if (props?.pagi === true)
-  //   setCurrentItems(productData?.slice(
-  //     indexOfFirstItem,
-  //     indexOfLastItem
-  //   ));
-  // else setCurrentItems(productData);
-
-  // }, [props?.filteredProductList, currentPage,indexOfFirstItem,indexOfLastItem,props?.pagi,productData]);
-
+  
   const totalPages = props?.totalPages;
   console.log(totalPages, productData);
   const handlePageChange = (page) => {
@@ -51,7 +46,7 @@ const ProductList = (props) => {
                   className="group min-h-[150px] relative max-h-[300px] xl:min-w-[200px] xm:flex xm:justify-cneter"
                 >
                   <Link
-                    to={`/productDetails/${product?._id}/${index}`}
+                    to={`/product-details/${product?._id}?index=${index}`}
                     target="_blank"
                   >
                     <div className="aspect-h-1 aspect-w-1  flex justify-center overflow-hidden min-h-[200px] bg-gray-200 lg:aspect-none group-hover:opacity-75  border border-gray-400 rounded-t-md">

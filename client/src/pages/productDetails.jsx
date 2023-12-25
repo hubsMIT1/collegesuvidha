@@ -5,7 +5,7 @@ import MapImage from "../assets/map.png";
 import { Navigation, Autoplay } from "swiper/modules";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDistanceToNow, format } from "date-fns";
 
@@ -22,8 +22,11 @@ import { getProductsById } from "../services/product_service";
 
 const ProductDetails = (props) => {
   const [err, setError] = useState();
-  const { id, index } = useParams();
-  const ind = parseInt(index);
+  const { id } = useParams();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+
+  const ind = parseInt(params.get("index"));
   const [products, setProduct] = useState();
   const { productData } = useSelector((state) => state.productData);
   const [prodDate, setProDate] = useState();
@@ -145,18 +148,13 @@ const ProductDetails = (props) => {
                       <div className="text-green-500 text-xl font-semibold">
                         ₹ {products?.price}
                       </div>
-                      <div className="text-gray-500 text-sm">
-                        Seller: {products?.seller}
-                      </div>
-                      <div className="text-gray-500 text-sm">
-                        Brand: {products?.brand}
-                      </div>
+                      
                       <div className="text-gray-500 text-sm">
                         Category: {products?.category}
                       </div>
 
                       <div className="text-gray-500 text-sm">
-                        Location: {products?.Address},{products?.zipCode}
+                        Location: {products?.address},{products?.zipCode}
                       </div>
                       {prodDate && (
                         <div className="text-gray-500 text-sm">
@@ -193,7 +191,7 @@ const ProductDetails = (props) => {
           <div className="mt-4  md:flex">
             {/* Owner details */}
             <div className=" p-4 rounded-lg md:w-1/2">
-              {products && <OwnerCard userId={products?.userId} />}
+              {products && <OwnerCard userId={products?.userId} prodId ={id} index={ind} />}
             </div>
 
             {/* Map section */}

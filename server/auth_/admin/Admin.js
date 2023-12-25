@@ -30,13 +30,14 @@ module.exports = {
       if (admin) {
         // res.status(200).json({ isAdmin: true });
         // return true;
+        req.user = req.user || {};
         req.user.admin = true;
+        next();
       }
       //  else {
-      //   return next(createError.Unauthorized());
+      else return next(createError.Unauthorized());
       //   // return false;
       // }
-      next();
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal server error" });

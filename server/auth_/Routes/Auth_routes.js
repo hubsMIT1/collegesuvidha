@@ -24,5 +24,5 @@ router.post("/refresh-token/:id", refreshToken);
 // router.get("/access-token",verifyAccessToken, accessToken)
 router.delete("/logout", logout);
 
-router.post("/add-admin", verifyAccessToken, addNewAdmin);
+router.post("/add-admin", verifyAccessToken,verifyAdmin, addNewAdmin);
 module.exports = router;

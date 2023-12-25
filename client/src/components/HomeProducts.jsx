@@ -11,10 +11,10 @@ function HomePageProducts() {
   const handleGetProduct = async () => {
     setLoading(true);
     try {
-      const productResults = await getProducts(1);
+      const productResults = await getProducts(1,"","","",null,9);
       if (productResults.status === 200) {
         setHomeProducts(productResults?.data?.products);
-        setProductStore(productResults.data.products, dispatch);
+        // setProductStore(productResults.data.products, dispatch);
       } else {
         setError(productResults.message);
       }

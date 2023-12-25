@@ -10,6 +10,7 @@ import ProductForm from "./pages/ProductForm";
 import FilterSection from "./components/FilterSection";
 import PrivateRoute from './_helpers/privateRoute';
 import RemoveLoginRoute from "./_helpers/removedLoginRoute";
+import AdminRoute from "./_helpers/adminRoute";
 import NewAdminForm from "./pages/AddNewAdmin";
 import { AdminProductList } from "./components/Dashboard/adminProductList";
 // import TestGetProduct from "./testApi/getProdujct";
@@ -25,7 +26,7 @@ function App() {
           <Route exact path="/" element={<HomePage />} />
           <Route
             exact
-            path="/productDetails/:id/:index"
+            path="/product-details/:id"
             element={<ProductDetails  />}
           />
           <Route element={<RemoveLoginRoute />}>
@@ -41,10 +42,13 @@ function App() {
             <Route path= "/dashboard/:section" element={<Dashboard />} />
             <Route path="/addproduct" element={<ProductForm />} />
             <Route path="/dashboard/your-products/:sellerId" element={<FilterSection title ={"Your Products"} seller={true} />} />
+          </Route>
+
+          <Route element={<AdminRoute />}>
             <Route path="/auth/add-new-admin" element={<NewAdminForm /> } />
             <Route path="/dashboard/admin/products-list" element={<AdminProductList /> } />
-
           </Route>
+
         </Routes>
       </BrowserRouter>
     </>

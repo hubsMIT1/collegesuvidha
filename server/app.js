@@ -57,6 +57,13 @@ app.use((err, req, res, next) => {
     },
   });
 });
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  // Add any additional logging or error handling here
+
+  // Restart the server
+  process.exit(1); // 1 indicates an abnormal exit, which will trigger the nodemon to restart
+});
 
 const PORT = process.env.PORT || 3001;
 

@@ -35,6 +35,7 @@ import { formatDistanceToNow, format } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
 
 const TABLE_HEAD = [
+  "S NO.",
   "Product Name",
   "Expiration Data",
   "Uploaded Date",
@@ -57,7 +58,7 @@ export function AdminProductList() {
     (state) => state.auth
   );
   const dispatch = useDispatch();
-  // console.log(userData)
+  console.log(userData)
   const itemsPerPage = 18;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -86,7 +87,7 @@ export function AdminProductList() {
       if (data.status === 200) {
         console.table(data.data.products);
         setProductList(data.data.products);
-        console.log(data.data.totalPages);
+        // console.log(data.data.totalPages);
         setTotalPage(data.data.totalPages);
         // setProductStore(data.data.products, dispatch);
       } else setError(data);
@@ -237,6 +238,7 @@ export function AdminProductList() {
 
               return (
                 <tr key={index + "1"}>
+                  <td className={classes}>{index+1}</td>
                   <td className={classes}>
                     <div className="flex items-center gap-3">
                       {/* <Avatar
@@ -251,7 +253,7 @@ export function AdminProductList() {
                         className="font-bold"
                       >
                         <Link
-                          to={`/productDetails/${product?._id}/${index}`}
+                          to={`/product-details/${product?._id}?index${index}`}
                           target="_blank"
                         >
                           {" "}
