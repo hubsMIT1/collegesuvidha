@@ -28,7 +28,7 @@ import "swiper/css/scrollbar";
 function CarouselCategory() {
   return (
     <div className="bg-white m-3">
-      <div className="text-2xl font-semibold p-3 text-center">
+      <div className="text-xl font-semibold p-3 text-center">
         All Available Categories
       </div>
       <Swiper
@@ -69,12 +69,12 @@ function CarouselCategory() {
         autoplay={{
           delay: 3000,
         }}
-        className="flex justify-center"
+        className="flex ml-10"
       >
-        <SwiperSlide>
+        <SwiperSlide className="ml-10" >
           <Link to={`allproducts?category=${encodeURIComponent("Cycle")}`}>
-            <img src={cycleIcon} title="Cycle" alt="" />
-            <div className="side-text relative  left-[40px] font-bold text-xl">
+            <img src={cycleIcon} title="Cycle" alt="" className="h-20" />
+            <div className="side-text relative left-[25px] font-bold text-md ">
               Cycle
             </div>
           </Link>
@@ -83,56 +83,56 @@ function CarouselCategory() {
           <Link
             to={`allproducts?category==${encodeURIComponent("Calculator")}`}
           >
-            <img src={calcuIcon} alt="" />
-            <div className="side-text relative top-[0px] left-[20px] font-bold text-xl">
+            <img src={calcuIcon} alt=""  className="h-20"/>
+            <div className="side-text relative top-[0px] left-[10px] font-bold text-md">
               Calculator
             </div>
           </Link>
         </SwiperSlide>
         <SwiperSlide>
           <Link to={`allproducts?category=${encodeURIComponent("Kettle")}`}>
-            <img src={eleKettle} alt="" />
-            <div className="side-text relative  left-[40px] font-bold text-xl">
+            <img src={eleKettle} alt="" className="h-20"/>
+            <div className="side-text relative  left-[25px] font-bold text-md">
               Kettle
             </div>
           </Link>
         </SwiperSlide>
         <SwiperSlide>
           <Link to={`allproducts?category=${encodeURIComponent("Cooler")}`}>
-            <img src={coolerIcon} alt="" />
-            <div className="side-text relative  left-[30px] font-bold text-xl">
+            <img src={coolerIcon} alt="" className="h-20"/>
+            <div className="side-text relative  left-[15px] font-bold text-md">
               Cooler
             </div>
           </Link>
         </SwiperSlide>
         <SwiperSlide>
           <Link to={`allproducts?category=${encodeURIComponent("Lab Dress")}`}>
-            <img src={labDress} alt="" />
-            <div className="side-text relative  left-[20px] font-bold text-xl">
+            <img src={labDress} alt=""className="h-20" />
+            <div className="side-text relative  left-[10px] font-bold text-md">
               Lab Dress
             </div>
           </Link>
         </SwiperSlide>
         <SwiperSlide>
           <Link to={`allproducts?category=${encodeURIComponent("Lab Shoes")}`}>
-            <img src={labShoes} alt="" />
-            <div className="side-text relative  left-[20px] font-bold text-xl">
+            <img src={labShoes} alt="" className="h-20"/>
+            <div className="side-text relative  left-[10px] font-bold text-md">
               Lab Shoes
             </div>
           </Link>
         </SwiperSlide>
         <SwiperSlide>
           <Link to={`allproducts?category=${encodeURIComponent("Dumb Bell")}`}>
-            <img src={dumbbellIcon} alt="" />
-            <div className="side-text relative  left-[20px] font-bold text-xl">
+            <img src={dumbbellIcon} alt="" className="h-20"/>
+            <div className="side-text relative  left-[10px] font-bold text-md">
               Dumb Bell
             </div>
           </Link>
         </SwiperSlide>
         <SwiperSlide>
           <Link to={`allproducts?category=${encodeURIComponent("Others")}`}>
-            <img src={others} alt="" />
-            <div className="side-text relative  left-[40px] font-bold text-xl">
+            <img src={others} alt="" className="h-20"/>
+            <div className="side-text relative  left-[25px] font-bold text-md">
               Other
             </div>
           </Link>

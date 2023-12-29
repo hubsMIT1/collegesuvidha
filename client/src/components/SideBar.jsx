@@ -38,11 +38,11 @@ function SideBar(props) {
               <Transition.Child
                 as={Fragment}
                 enter="transition ease-in-out duration-300 transform"
-                enterFrom="translate-x-full"
-                enterTo="translate-x-0"
+                enterFrom="translate-x-full" // Slide in from the right
+                enterTo="translate-x-0"      // Slide to the left
                 leave="transition ease-in-out duration-300 transform"
-                leaveFrom="translate-x-0"
-                leaveTo="translate-x-full"
+                leaveFrom="translate-x-0"    // Slide out to the left
+                leaveTo="translate-x-full"   // Slide out to the right
               >
                 <Dialog.Panel className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl">
                   <div className="flex items-center justify-between px-4">

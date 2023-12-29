@@ -36,8 +36,8 @@ function FeaturedSection() {
   // console.log(products)
   return (
     <div>
-      <div className="flex justify-center  mb-5">
-        <h1 className="text-cs-textHdClr text-[2rem] font-bold">
+      <div className="flex justify-center  mb-3">
+        <h1 className="text-cs-textHdClr text-[1.5rem] font-bold">
           Featured Products
         </h1>
       </div>

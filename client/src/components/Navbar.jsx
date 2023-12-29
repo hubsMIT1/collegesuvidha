@@ -59,11 +59,11 @@ function Navbar() {
 
         <div className="flex items-center m-4 ml-0">
           <Link to={`/`}>
-            <img className=" m-1" src={CS_logo} alt="collegesuvidha" />
+            <img className="m-1 min-h-[30px]" src={CS_logo} alt="collegesuvidha" />
           </Link>
           <Link to={`/`}>
             {" "}
-            <h3 className=" font-bold xs:hidden"> Collegeसुविधा</h3>
+            <h3 className="font-bold ml-1 text-s md:text-xl lg:text-xl"> College<span className="text-xs md:text-xl lg:text-xl">सुविधा</span></h3>
           </Link>
         </div>
 
@@ -110,7 +110,7 @@ function Navbar() {
                   size='30'                
                   // className=" border-2 border-white round"
                 />
-                <span>Hi, {userData?.firstName} </span>
+                <span>{userData?.firstName} </span>
               </Link>
             ) : (
               <Link
@@ -136,8 +136,8 @@ function Navbar() {
           </div>
         </div>
       </div>
-      <div className="flex md:hidden lg:hidden xl:hidden">
-        <Search />
+      <div className=" bg-cs-textHdClr flex md:hidden lg:hidden xl:hidden">
+        <Search className="m-2" />
       </div>
       { isAuthenticated && 
       <div className="flex bg-purple-400 text-white space-x-3 text-xs xl:text-sm p-2 pl-6">
@@ -154,6 +154,7 @@ function Navbar() {
           isMobile={mobileFiltersOpen}
           setIsMobile={setMobileFiltersOpen}
           section={navHeadings}
+          openFromRight  
         />
       )}
     </header>
