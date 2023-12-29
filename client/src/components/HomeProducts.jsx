@@ -32,9 +32,9 @@ function HomePageProducts() {
   if (err?.length > 0) return <h1 className="text-red-600">{err.message}</h1>;
   return (
     <div>
-      <div className="flex justify-center  mb-5">
-        <h1 className="text-cs-textHdClr text-[2rem] font-bold">
-          Products: You may like
+      <div className="flex justify-center mb-3">
+        <h1 className="text-cs-textHdClr text-[1.5rem] font-bold">
+          Latest: You may like
         </h1>
       </div>
 

@@ -8,9 +8,9 @@ function Search() {
     navigate(`/allproducts?search=${searchInput}`);
   };
   return (
-    <div className="w-[100%]">
+    <div className="w-[100%] m-2">
       <div className="flex items-center h-10 bg-purple-400 rounded" type="text">
-        <select className="p-2 bg-gray-300 text-black border text-xs xl:text-sm">
+        <select className="p-2 bg-gray-300 text-black border text-xs xl:text-sm w-12 xl:w-15 lg:w-15">
           <option value="">All</option>
           <option value="">Cycle</option>
           <option value="">Mattress</option>

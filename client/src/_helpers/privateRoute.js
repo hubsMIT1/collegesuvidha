@@ -8,12 +8,11 @@ import { history } from './history';
 
 export default function PrivateRoute() {
     const { isAuthenticated } = useSelector((state) => state.auth);
-    const {userData} = useSelector((state)=>state.user)
-    console.log(userData?.isAdmin)
+   
 
-    if (!isAuthenticated && !userData.isAdmin) {
+    if (!isAuthenticated) {
         // not logged in so redirect to login page with the return url
-        return <Navigate to="/" />
+        return <Navigate login={true} to="/auth/login" state={{ from: history.location }} />
     }
     
 

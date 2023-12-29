@@ -14,11 +14,12 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
     path: "backend/config/.env",
   });
 }
+const allowedOrigins = ["http://localhost:3000", "https://collegesuvidha.vercel.app"];
 
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: allowedOrigins,
     credentials: true,
   })
 );
