@@ -173,7 +173,7 @@ export function AdminProductList() {
         console.error("Error updating product:", error?.message);
       });
 
-    console.log(newIsFeatured, editedProduct);
+    // console.log(newIsFeatured, editedProduct);
 
     // Call your update function or dispatch action here
     // e.g., updateProductIsFeatured(newIsFeatured);

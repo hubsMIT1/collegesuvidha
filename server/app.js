@@ -35,7 +35,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.get("/", verifyAccessToken, async (req, res, next) => {
-  console.log("home page");
+  // console.log("home page");
   res.send("home page");
 });
 app.use("/auth", AuthRoute);

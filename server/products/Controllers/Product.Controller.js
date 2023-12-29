@@ -86,8 +86,7 @@ const getProducts = async (req, res) => {
         { category: regex },
       ];
     }
-    if(featured)
-      console.log(featured,perPage);
+  
 
     let totalProducts;
     // console.log(query,Object.keys(query).length)
@@ -291,7 +290,7 @@ const updateProductStatus = async (req, res) => {
     }
 
     let updatedField;
-    console.log(field,typeof(statusCode));
+  
     if (field === "status" && (statusCode==0 || statusCode==1)) {
       existingProduct["isPublish"] = statusCode;
       updatedField = "isPublish";

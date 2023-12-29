@@ -55,8 +55,7 @@ const sortOptions = [
     order: -1,
   },
 ];
-const subCategories = [
-];
+const subCategories = [];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -76,7 +75,7 @@ const FilterSection = React.memo(function FilterSection(props) {
   const searchParam = params.get("search");
   const order = params.get("order");
   // const sellerId = params.get("sellerId")
-  console.log(searchParam, sortParam);
+  // console.log(searchParam, sortParam);
   let tempsearchtext;
   const { sellerId } = useParams();
   let updatedSortOptions;
@@ -92,8 +91,8 @@ const FilterSection = React.memo(function FilterSection(props) {
   }
   const { isAuthenticated, accessToken, refreshToken } = useSelector(
     (state) => state.auth
-  ); 
-  console.log(updatedSortOptions);
+  );
+  // console.log(updatedSortOptions);
   const [selectedCategories, setSelectedCategories] = useState(
     categoryParam ? categoryParam.split(",") : []
   );
@@ -130,9 +129,9 @@ const FilterSection = React.memo(function FilterSection(props) {
     setCurrentPage(1);
   };
   const resetCategory = () => {
-    setSelectedCategories((prev)=> [...prev,[]]);
-    filters[0].options.forEach((cat,ind)=>cat.checked = false)
-    console.log(selectedCategories,filters[0].options)
+    setSelectedCategories((prev) => [...prev, []]);
+    filters[0].options.forEach((cat, ind) => (cat.checked = false));
+    console.log(selectedCategories, filters[0].options);
   };
 
   const getCategories = async () => {
@@ -164,7 +163,7 @@ const FilterSection = React.memo(function FilterSection(props) {
     try {
       let data;
       if (props?.seller) {
-        if(!isAuthenticated)navigate('/allproducts');
+        if (!isAuthenticated) navigate("/allproducts");
         data = await getProductsByUserId(
           currentPage,
           sellerId,
@@ -186,7 +185,7 @@ const FilterSection = React.memo(function FilterSection(props) {
       if (data.status === 200) {
         // console.table(data.data.products)
         setProductList(data.data.products);
-        console.log(data.data.totalPages);
+        // console.log(data.data.totalPages);
         setTotalPage(data.data.totalPages);
         setProductStore(data.data.products, dispatch);
         const queryParams = {};
@@ -232,7 +231,7 @@ const FilterSection = React.memo(function FilterSection(props) {
       setLoading(false);
     }
   };
-  console.log(currentPage);
+  // console.log(currentPage);
 
   useEffect(() => {
     handleGetProducts();
@@ -263,13 +262,13 @@ const FilterSection = React.memo(function FilterSection(props) {
 
             <div className="fixed inset-0 z-40 flex">
               <Transition.Child
-                 as={Fragment}
-                 enter="transition ease-in-out duration-300 transform"
-                 enterFrom="translate-x-full"  // Slide in from the right
-                 enterTo="translate-x-0"      // Slide to the left
-                 leave="transition ease-in-out duration-300 transform"
-                 leaveFrom="translate-x-0"    // Slide out to the left
-                 leaveTo="translate-x-full"    // Slide out to the right
+                as={Fragment}
+                enter="transition ease-in-out duration-300 transform"
+                enterFrom="translate-x-full" // Slide in from the right
+                enterTo="translate-x-0" // Slide to the left
+                leave="transition ease-in-out duration-300 transform"
+                leaveFrom="translate-x-0" // Slide out to the left
+                leaveTo="translate-x-full" // Slide out to the right
               >
                 <Dialog.Panel className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl">
                   <div className="flex items-center justify-between px-4">
@@ -358,7 +357,6 @@ const FilterSection = React.memo(function FilterSection(props) {
 
                   {/* <Button className="mt-4 border-gray-200" onClick={resetCategory}> Reset </Button> */}
                 </Dialog.Panel>
-
               </Transition.Child>
             </div>
           </Dialog>
@@ -377,8 +375,13 @@ const FilterSection = React.memo(function FilterSection(props) {
               >
                 <div>
                   <Menu.Button className="group inline-flex justify-center text-xs font-medium text-gray-900 hover:text-gray-700">
-                    <p>Sort by: <span className="pl-1 text-xs">{sorts?.name || "Featured"}</span></p>
-                    
+                    <p>
+                      Sort by:{" "}
+                      <span className="pl-1 text-xs">
+                        {sorts?.name || "Featured"}
+                      </span>
+                    </p>
+
                     <ChevronDownIcon
                       className="-mr-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                       aria-hidden="true"
@@ -457,7 +460,9 @@ const FilterSection = React.memo(function FilterSection(props) {
                   <h3 className="sr-only">Categories</h3>
                   <ul
                     role="list"
-                    className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900"
+                    className="space-y-4 border-b border-gray-200 pb-6
+                     text-sm font-medium
+                     text-gray-900"
                   >
                     {subCategories.map((category) => (
                       <li key={category.name}>

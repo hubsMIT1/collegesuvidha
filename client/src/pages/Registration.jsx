@@ -51,7 +51,7 @@ function MyForm(props) {
     }
 
     // return errors;
-    console.log(errors);
+    // console.log(errors);
     if (
       errors?.confirmPassword ||
       errors.email ||
@@ -83,7 +83,7 @@ function MyForm(props) {
     // return values;
   };
 
-  console.log(props?.login, props?.signup);
+  // console.log(props?.login, props?.signup);
   const formik = useFormik({
     initialValues: {
       firstName: "",
