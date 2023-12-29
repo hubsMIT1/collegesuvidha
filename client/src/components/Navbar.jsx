@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
 import CS_logo from "../assets/header_logo.png";
-import { FaBars, FaPlus, FaSignInAlt, FaUser,FaUserCircle } from "react-icons/fa";
+import { FaBars, FaPlus, FaSignInAlt, FaUserCircle } from "react-icons/fa";
 import Search from "./Search";
 import { Link } from "react-router-dom";
-
-import { Avatar } from "@material-tailwind/react";
 import { useDispatch, useSelector } from "react-redux";
 import authService from "../services/auth_service";
 
 import SideBar from "./SideBar";
 function Navbar() {
-  const { isAuthenticated, accessToken, refreshToken, userId} = useSelector(
+  const { isAuthenticated, accessToken, refreshToken, userId } = useSelector(
     (state) => state.auth
   );
   const { userData } = useSelector((state) => state.user);
@@ -59,11 +57,19 @@ function Navbar() {
 
         <div className="flex items-center m-4 ml-0">
           <Link to={`/`}>
-            <img className="m-1 min-h-[30px]" src={CS_logo} alt="collegesuvidha" />
+            <img
+              className="m-1 min-h-[30px]"
+              src={CS_logo}
+              alt="collegesuvidha"
+            />
           </Link>
           <Link to={`/`}>
             {" "}
-            <h3 className="font-bold ml-1 text-s md:text-xl lg:text-xl"> College<span className="text-xs md:text-xl lg:text-xl">सुविधा</span></h3>
+            <h3 className="font-bold ml-1 text-s md:text-xl lg:text-xl">
+              {" "}
+              College
+              <span className="text-xs md:text-xl lg:text-xl">सुविधा</span>
+            </h3>
           </Link>
         </div>
 
@@ -107,7 +113,7 @@ function Navbar() {
                 className="flex justify-center items-center gap-1"
               >
                 <FaUserCircle
-                  size='30'                
+                  size="30"
                   // className=" border-2 border-white round"
                 />
                 <span>{userData?.firstName} </span>
@@ -139,22 +145,25 @@ function Navbar() {
       <div className=" bg-cs-textHdClr flex md:hidden lg:hidden xl:hidden">
         <Search className="m-2" />
       </div>
-      { isAuthenticated && 
-      <div className="flex bg-purple-400 text-white space-x-3 text-xs xl:text-sm p-2 pl-6">
-        
-        <Link to={`/dashboard/your-products/${userId}`}>Your Products</Link>
-        <Link to={`/dashboard/chats`}>Chats</Link>
-        {/* <Link to={`/auth/signup`}>Sign Up</Link> */}
-        {userData?.isAdmin && <Link to="/auth/add-new-admin"> Add Admins </Link>}
-        {userData?.isAdmin && <Link to="/dashboard/admin/products-list"> Admin Dashboard</Link>}
-      </div>
-      }
+      {isAuthenticated && (
+        <div className="flex bg-purple-400 text-white space-x-3 text-xs xl:text-sm p-2 pl-6">
+          <Link to={`/dashboard/your-products/${userId}`}>Your Products</Link>
+          <Link to={`/dashboard/chats`}>Chats</Link>
+          {/* <Link to={`/auth/signup`}>Sign Up</Link> */}
+          {userData?.isAdmin && (
+            <Link to="/auth/add-new-admin"> Add Admins </Link>
+          )}
+          {userData?.isAdmin && (
+            <Link to="/dashboard/admin/products-list"> Admin Dashboard</Link>
+          )}
+        </div>
+      )}
       {mobileFiltersOpen && (
         <SideBar
           isMobile={mobileFiltersOpen}
           setIsMobile={setMobileFiltersOpen}
           section={navHeadings}
-          openFromRight  
+          openFromRight
         />
       )}
     </header>

@@ -11,8 +11,6 @@ import {
   Button,
   CardBody,
   Chip,
-  CardFooter,
-  Avatar,
   IconButton,
   Tooltip,
   Input,
@@ -20,7 +18,7 @@ import {
 import { getProductsByUserId } from "../../services/product_service";
 import { useDispatch, useSelector } from "react-redux";
 import Pagination from "../Pagination";
-import { formatDistanceToNow, format } from "date-fns";
+import { format } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
 
 const TABLE_HEAD = [
@@ -39,7 +37,7 @@ export function ListedProduct() {
   const [totalPage, setTotalPage] = useState(1);
   const [err, setError] = useState(null);
   const [page, setPage] = useState(1);
-    // console.log(userData)
+  // console.log(userData)
   const itemsPerPage = 18;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -61,12 +59,18 @@ export function ListedProduct() {
     try {
       let data;
 
-      data = await getProductsByUserId(currentPage, userId,accessToken,refreshToken,dispatch);
+      data = await getProductsByUserId(
+        currentPage,
+        userId,
+        accessToken,
+        refreshToken,
+        dispatch
+      );
 
       if (data.status === 200) {
-        console.table(data.data.products);
+        // console.table(data.data.products);
         setProductList(data.data.products);
-        console.log(data.data.totalPages);
+        // console.log(data.data.totalPages);
         setTotalPage(data.data.totalPages);
         // setProductStore(data.data.products, dispatch);
       } else setError(data);

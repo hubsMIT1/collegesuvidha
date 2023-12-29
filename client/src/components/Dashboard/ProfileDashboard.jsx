@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { useCallback, useEffect, useLayoutEffect } from "react";
+import { useEffect } from "react";
 import authService from "../../services/auth_service";
 
 const ProfileForm = () => {
@@ -9,16 +9,16 @@ const ProfileForm = () => {
   const { isAuthenticated, accessToken, refreshToken, userId } = useSelector(
     (state) => state.auth
   );
-  console.log(isAuthenticated, accessToken, refreshToken, userId);
+  // console.log(isAuthenticated, accessToken, refreshToken, userId);
 
   const dispatch = useDispatch();
 
   const fetchUserData = async () => {
-    console.log("api backend userdata");
+    // console.log("api backend userdata");
 
     if (isAuthenticated && !userData) {
       try {
-        console.log(userData);
+        // console.log(userData);
 
         await authService.userData(userId, accessToken, refreshToken, dispatch);
 
@@ -35,7 +35,7 @@ const ProfileForm = () => {
     // }
     if (isAuthenticated) fetchUserData();
   }, [isAuthenticated]);
-console.log(userData)
+// console.log(userData)
   useEffect(() => {
     formik.setValues({
       firstName: userData?.firstName || "",
@@ -68,7 +68,7 @@ console.log(userData)
       //   address2: yup.string().required("Address 2 is required"),
     }),
     onSubmit: async (values) => {
-      console.log(values);
+      // console.log(values);
       const data = await authService.handleProfileUpdate(
         values,
         userId,
@@ -76,7 +76,7 @@ console.log(userData)
         refreshToken,
         dispatch
       );
-      console.log(data);
+      // console.log(data);
     },
   });
   // console.log(formik.values,userData?.email)

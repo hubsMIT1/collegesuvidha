@@ -21,7 +21,7 @@ export const createProduct = async (
       refreshToken,
       dispatch
     );
-    console.log(handledResponse);
+    // console.log(handledResponse);
 
     if (handledResponse?.status === 200) {
       return handledResponse;
@@ -200,7 +200,7 @@ export const updateProduct = async (
   dispatch
 ) => {
   try {
-    console.log(accessToken);
+    // console.log(accessToken);
 
     // console.log(productData)
     const response = await callProductApi.put(`/${productId}`, productData, {

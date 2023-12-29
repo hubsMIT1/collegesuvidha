@@ -6,7 +6,7 @@ import { Navigation, Autoplay } from "swiper/modules";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useLocation, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { formatDistanceToNow, format } from "date-fns";
 
 // Import Swiper styles
@@ -15,7 +15,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import OwnerCard from "./OwnerCard";
-import MapExample from "../components/GoogleMap";
+// import MapExample from "../components/GoogleMap";
 import { Link } from "react-router-dom";
 
 import { getProductsById } from "../services/product_service";
@@ -56,14 +56,14 @@ const ProductDetails = (props) => {
         setError(err.message);
       }
     }
-    console.log(products);
+    // console.log(products);
     if (products && products?.updatedAt) {
       const inputDate = new Date(products?.updatedAt);
       // Format the date as "Month day, year"
       const formattedDate = format(inputDate, "MMMM d, yyyy");
       const distanceToNow = formatDistanceToNow(inputDate, { addSuffix: true });
       setProDate({ formattedDate, distanceToNow });
-      console.log(prodDate);
+      // console.log(prodDate);
     }
   };
   useLayoutEffect(() => {

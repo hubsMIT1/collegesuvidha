@@ -1,5 +1,5 @@
 import OwnerCard from "./OwnerCard";
-import { useParams } from 'react-router-dom'
+import { useParams } from "react-router-dom";
 import FilterSection from "../components/FilterSection";
 
 function SellerPage(props) {
@@ -12,7 +12,11 @@ function SellerPage(props) {
       </div>
       <div className=" lg:mt-1">
         <div className="lg:overflow-hidden lg:flex-1 overflow: -webkit-scrollbar:none no-scrollbar">
-          <FilterSection seller={true} title={"Listing by seller"} sellerId = {sellerId} />
+          <FilterSection
+            seller={true}
+            title={"Listing by seller"}
+            sellerId={sellerId}
+          />
         </div>
       </div>
     </div>

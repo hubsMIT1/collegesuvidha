@@ -7,25 +7,22 @@ import { useSelector } from "react-redux";
 const ProductList = (props) => {
   // console.log(props)
   const [currentPage, setCurrentPage] = useState(props?.currentPage || 1);
-  const itemsPerPage = 18;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  const {productData} = useSelector((state) => state.productData);
-  
+  const { productData } = useSelector((state) => state.productData);
+
   // Using props?.homeProducts if available, otherwise using productData from Redux
-  const currentProducts = props?.homeProducts !== undefined ? props.homeProducts : productData;
+  const currentProducts =
+    props?.homeProducts !== undefined ? props.homeProducts : productData;
 
   const [currentItems, setCurrentItems] = useState();
-  
+
   // if(productData===undefined)setCurrentItems(saveProduct);
   useEffect(() => {
     setCurrentItems(currentProducts);
   }, [currentProducts]);
 
-  
   const totalPages = props?.totalPages;
-  console.log(totalPages, productData);
+  // console.log(totalPages, productData);
   const handlePageChange = (page) => {
     props.setPage(page);
   };

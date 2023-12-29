@@ -2,17 +2,9 @@ import React, { useEffect, useState } from "react";
 import { ListedProduct } from "../components/Dashboard/ListedProduct";
 import ProfileForm from "../components/Dashboard/ProfileDashboard";
 import ChatList from "../components/Dashboard/ChatList";
-// import { useParams,Link, BrowserRouter } from 'react-router-dom';
-import { HashLink } from "react-router-hash-link";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { history } from "../_helpers/history";
-import {
-  Navigate,
-  useParams,
-  useLocation,
-  useNavigate,
-  Link,
-} from "react-router-dom";
+import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { clearUserDataStore, logoutAuthStore } from "../redux/allAction";
 
 function Dashboard(props) {

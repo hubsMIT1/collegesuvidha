@@ -1,8 +1,6 @@
 import { CarouselCategory } from '../components'
 import FeaturedSection from "../components/FeaturedProductSection";
 import HomePageProducts from "../components/HomeProducts";
-import { Button } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
 
 const HomePage = () => {
   return (

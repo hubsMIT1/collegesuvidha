@@ -5,7 +5,7 @@ import authService from "../services/auth_service";
 import { useDispatch, useSelector } from "react-redux";
 
 function NewAdminForm() {
-  const { isAuthenticated, accessToken, refreshToken, userId } = useSelector(
+  const { accessToken, refreshToken, userId } = useSelector(
     (state) => state.auth
   );
   const validate = (values) => {

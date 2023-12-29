@@ -1,11 +1,11 @@
 import React from "react";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
-import { callAuthApi, config } from "../utils/CallApi";
-import { useDispatch, useSelector } from "react-redux";
+import { config } from "../utils/CallApi";
+import { useDispatch } from "react-redux";
 import { history } from "../_helpers/history";
 
-import { setAuthStore, setUserDataStore } from "../redux/allAction";
+import { setAuthStore } from "../redux/allAction";
 import authService from "../services/auth_service";
 
 function MyForm(props) {
@@ -68,24 +68,12 @@ function MyForm(props) {
     try {
       const route = props?.signup ? "register" : "login";
       const { email, password } = values;
-      console.log(config);
       const data = props?.signup ? values : { email, password };
-      console.log(data);
-      // const response = await axios.post('http://localhost:3001/auth/login',
-      //     const response = await axios.post('http://localhost:3001/auth/login', data, {
-      //       withCredentials: true, // equivalent to credentials: 'include'
-      //       headers: {
-      //         'Content-Type': 'application/json',
-      //       },
-      // });
       const from = history.location?.state?.from || { pathname: "/" };
       const response = await authService.handleRegistration(route, data);
       if (response.status === 200) {
-        // console.log(response.data)
         setAuthStore(response.data, dispatch);
-        // setUserDataStore(response.data,dispatch)
         navigate(from);
-        // navigate('/');
       } else {
         console.error("Registration failed:", response.data);
       }
