@@ -2,8 +2,9 @@ import axios from "axios";
 // import { BASE_URL,AUTH_API,PRODCUT_API } from "./constants";
 
 const AUTH_API = process.env.REACT_APP_AUTH_API;
-const PRODCUT_API = process.env.REACT_APP_PRODCUT_API;
+const PRODUCT_API = process.env.REACT_APP_PRODUCT_API;
 
+console.log(AUTH_API,PRODUCT_API )
 const config = {
   headers: {
     "Content-Type": "application/json",
@@ -15,7 +16,7 @@ const callAuthApi = axios.create({
   credentials: 'include',
 });
 const callProductApi = axios.create({
-  baseURL: PRODCUT_API,
+  baseURL: PRODUCT_API,
 })
 
 export  {callAuthApi,config,callProductApi}
