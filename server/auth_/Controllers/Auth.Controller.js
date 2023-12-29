@@ -41,7 +41,7 @@ module.exports = {
     }
   },
   register: async (req, res, next) => {
-    console.log(req.body);
+    // console.log(req.body);
     // res.send('registration ');
     try {
       // const {firstName,lastName,email,password,confirmPassword} = req.body;

@@ -47,9 +47,9 @@ router.post(
 
     // Hash password before saving to database
     const salt = await bcrypt.genSalt(10);
-    console.log("salt:", salt);
+    // console.log("salt:", salt);
     const hashedPassword = await bcrypt.hash(password, salt);
-    console.log("hashed password:", hashedPassword);
+    // console.log("hashed password:", hashedPassword);
 
     // Save email and password to database/array
     users.push({

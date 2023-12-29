@@ -20,7 +20,7 @@ function NewAdminForm() {
   const dispatch = useDispatch();
   const onSubmit = async (value, { resetForm }) => {
     // Add your logic to submit the form (e.g., make an API call)
-    console.log("Submit form with values:", value);
+    // console.log("Submit form with values:", value);
     const res = await authService.addNewAdminHandler(
       value,
       userId,
@@ -28,7 +28,7 @@ function NewAdminForm() {
       refreshToken,
       dispatch
     );
-    console.log(res?.message);
+    // console.log(res?.message);
     resetForm();
   };
 

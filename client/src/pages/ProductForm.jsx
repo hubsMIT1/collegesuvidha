@@ -7,7 +7,7 @@ import { categories } from "../utils/constants";
 function ProductForm(props) {
   const location = useLocation();
   let { editProduct } = location?.state || {};
-  console.log(editProduct);
+  // console.log(editProduct);
 
   const initialValues = {
     title: editProduct?.title || "",
@@ -103,7 +103,7 @@ function ProductForm(props) {
     e.preventDefault();
     const formData = new FormData();
     Object.entries(productData).forEach(([key, value]) => {
-      console.log(value);
+      // console.log(value);
       if (key === "images") {
         // Handle images as an array of file objects
         value.forEach((image, index) => {

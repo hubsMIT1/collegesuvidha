@@ -25,7 +25,7 @@ export const clearUserDataStore = (dispatch)=>{
 export const setProductStore = (data, dispatch)=>{
 
     dispatch(setProductData(data));
-    console.log(data);
+    // console.log(data);
 
 }
 export const clearProductStore = (dispatch)=>{

@@ -15,7 +15,7 @@ export default function TestGetProduct(){
           .then((products) => {
             // Dispatch an action to store products in the Redux store
             // You can create a separate product action for this if needed
-            console.log(products);
+            // console.log(products);
             setProduct(products.data.products);
           })
           .catch((error) => {

@@ -16,7 +16,7 @@ function FeaturedSection() {
 
       const productResults = await getProducts(1,"","","",1,6);
       if (productResults.status === 200) {
-        console.log(productResults);
+        // console.log(productResults);
         // console.log(productResults)
         setFeaturedProduct(productResults.data.products);
         setProductStore(productResults.data.products, dispatch);

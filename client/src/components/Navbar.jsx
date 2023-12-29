@@ -13,15 +13,15 @@ function Navbar() {
   );
   const { userData } = useSelector((state) => state.user);
 
-  console.log(isAuthenticated, userData);
+  // console.log(isAuthenticated, userData);
   const dispatch = useDispatch();
 
   const fetchUserData = async () => {
-    console.log("api backend userdata");
+    // console.log("api backend userdata");
 
     if (isAuthenticated && !userData) {
       try {
-        console.log(userData);
+        // console.log(userData);
 
         await authService.userData(userId, accessToken, refreshToken, dispatch);
 
