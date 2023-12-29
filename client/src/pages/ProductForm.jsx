@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import authService from "../services/auth_service";
-import { setUserData, clearUserData } from "../redux/userData/userAction";
 import { createProduct, updateProduct } from "../services/product_service";
 import { useLocation, useNavigate } from "react-router-dom";
-import { select } from "@material-tailwind/react";
 import { categories } from "../utils/constants";
 
 function ProductForm(props) {
@@ -26,8 +23,8 @@ function ProductForm(props) {
   const [productData, setProductData] = useState(initialValues);
 
   const [uploadedImages, setUploadedImages] = useState(productData?.images);
-  const { userData } = useSelector((state) => state.user);
-  const { isAuthenticated, accessToken, refreshToken, userId } = useSelector(
+  // const { userData } = useSelector((state) => state.user);
+  const { accessToken, refreshToken, userId } = useSelector(
     (state) => state.auth
   );
 
@@ -47,7 +44,7 @@ function ProductForm(props) {
       .then((base64Images) => {
         setProductData((prevData) => ({
           ...prevData,
-             images: [...prevData.images, ...base64Images]
+          images: [...prevData.images, ...base64Images],
         }));
       })
       .catch((error) => {
@@ -93,27 +90,15 @@ function ProductForm(props) {
         formData.append(key, value);
       }
     });
-    console.log(formData);
+    // console.log(formData);
 
     await createProduct(formData, userId, accessToken, refreshToken, dispatch)
-      .then((res) => {
-        // Handle the new product data as needed
-        // console.log(res)
-        console.log("New product created:", res?.data?.message);
-        // if (res.status === 200) {
-        //   navigate(`/dashboard/productListing`);
-        //   editProduct = null;
-        //   setProductData(initialValues);
-        // }
-      })
+      .then((res) => {})
       .catch((error) => {
         console.error("Error creating product:", error);
       });
-
-    // const data = {name:productData.title, desc:productData.description, type:productData.category,unit:productData.quantity, price:productData.price,suplier:userData?.firstName+userData?.lastName,userId:userData._id}
-
-    // console.log(productData);
   };
+
   const handleProductUpdate = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -129,8 +114,6 @@ function ProductForm(props) {
       }
     });
 
-    // Update existing product
-    // console.log(formData)
     await updateProduct(
       editProduct._id,
       formData,
@@ -140,12 +123,6 @@ function ProductForm(props) {
       dispatch
     )
       .then((updatedProduct) => {
-        // Handle the updated product data as needed
-        // console.log("Product updated:", updatedProduct);
-        console.log(
-          "New product updation state:",
-          updatedProduct?.response?.data?.message
-        );
         if (updatedProduct.status === 200) {
           navigate(`/product-details/${updatedProduct?.data?._id}`);
           editProduct = null;
@@ -156,11 +133,7 @@ function ProductForm(props) {
       .catch((error) => {
         console.error("Error updating product:", error);
       });
-
     setUploadedImages([]);
-    // const data = {name:productData.title, desc:productData.description, type:productData.category,unit:productData.quantity, price:productData.price,suplier:userData?.firstName+userData?.lastName,userId:userData._id}
-
-    // console.log(productData);
   };
 
   return (
@@ -230,17 +203,11 @@ function ProductForm(props) {
                 required
               >
                 <option value="">Select Category</option>
-              { 
-                categories?.map((category,index)=>(
-                  <option key={index} value={category}>{category}</option>
-                ))
-              }
-                
-                
-                {/* <option value="mattress">Mattress</option>
-                <option value="kattle">Kattle</option> */}
-
-                {/* Add more category options */}
+                {categories?.map((category, index) => (
+                  <option key={index} value={category}>
+                    {category}
+                  </option>
+                ))}
               </select>
             </div>
             {/* Price */}

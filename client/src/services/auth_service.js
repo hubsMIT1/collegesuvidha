@@ -54,7 +54,7 @@ const getSellerById = async (id) => {
 };
 
 const handleRefreshToken = async (id, refreshToken, dispatch) => {
-  console.log("refreshToken", refreshToken);
+  // console.log("refreshToken", refreshToken);
   try {
     const res = await callAuthApi.post(
       `/refresh-token/${id}`,
@@ -88,7 +88,7 @@ const handleApiResponse = async (
   } else if (response === "") {
     try {
       const res = await handleRefreshToken(id, refreshToken, dispatch);
-      console.log(res);
+      // console.log(res);
       return res;
     } catch (err) {
       // Redirect to login page if refresh token fails

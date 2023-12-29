@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import ProductList from "./ProductList";
 import { getProducts } from "../services/product_service";
 import { useDispatch } from "react-redux";
-import { setProductStore } from "../redux/allAction";
+
 function HomePageProducts() {
   const [loading, setLoading] = useState(false);
   const [err, setError] = useState(null);
   const [homeProducts, setHomeProducts] = useState();
-  const dispatch = useDispatch();
+
   const handleGetProduct = async () => {
     setLoading(true);
     try {

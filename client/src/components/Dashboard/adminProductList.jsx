@@ -9,29 +9,23 @@ import {
 import {
   Card,
   Switch,
-  FormControlLabel,
   Select,
-  MenuItem,
   Option,
   CardHeader,
   Typography,
   Button,
   CardBody,
-  Chip,
-  CardFooter,
-  Avatar,
   IconButton,
   Tooltip,
   Input,
 } from "@material-tailwind/react";
 import {
   getProductsByUserId,
-  updateProduct,
   updateProductStatus,
 } from "../../services/product_service";
 import { useDispatch, useSelector } from "react-redux";
 import Pagination from "../Pagination";
-import { formatDistanceToNow, format } from "date-fns";
+import {format } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
 
 const TABLE_HEAD = [
@@ -58,7 +52,7 @@ export function AdminProductList() {
     (state) => state.auth
   );
   const dispatch = useDispatch();
-  console.log(userData)
+  // console.log(userData)
   const itemsPerPage = 18;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -85,7 +79,7 @@ export function AdminProductList() {
       );
 
       if (data.status === 200) {
-        console.table(data.data.products);
+        // console.table(data.data.products);
         setProductList(data.data.products);
         // console.log(data.data.totalPages);
         setTotalPage(data.data.totalPages);
@@ -115,7 +109,7 @@ export function AdminProductList() {
 
   const handlePublishStatusChange = async (e, id) => {
     // const newPublishStatus = parseInt(event.target.value, 10);
-    console.log(e, editedProduct, id);
+    // console.log(e, editedProduct, id);
     await updateProductStatus(
       id,
       "status",
@@ -238,7 +232,7 @@ export function AdminProductList() {
 
               return (
                 <tr key={index + "1"}>
-                  <td className={classes}>{index+1}</td>
+                  <td className={classes}>{index + 1}</td>
                   <td className={classes}>
                     <div className="flex items-center gap-3">
                       {/* <Avatar

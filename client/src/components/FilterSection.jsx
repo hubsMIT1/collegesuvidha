@@ -6,20 +6,17 @@ import {
   FunnelIcon,
   MinusIcon,
   PlusIcon,
-  Squares2X2Icon,
 } from "@heroicons/react/20/solid";
+import { Button } from "@material-tailwind/react";
 import ProductList from "./ProductList";
-import { callApi } from "../utils/CallApi";
 import { getProducts, getProductsByUserId } from "../services/product_service";
 import { useDispatch, useSelector } from "react-redux";
-import { setProductData } from "../redux/productData/productAction";
 import { categories } from "../utils/constants";
 import { Link, useParams } from "react-router-dom";
 import { setProductStore } from "../redux/allAction";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const sortOptions = [
-  //   { name: 'Most Popular', href: '#', current: true },
   {
     name: "Featured",
     href: "featured",
@@ -59,11 +56,6 @@ const sortOptions = [
   },
 ];
 const subCategories = [
-  //   { name: 'Totes', href: '#' },
-  //   { name: 'Backpacks', href: '#' },
-  //   { name: 'Travel Bags', href: '#' },
-  //   { name: 'Hip Bags', href: '#' },
-  //   { name: 'Laptop Sleeves', href: '#' },
 ];
 
 function classNames(...classes) {
@@ -98,7 +90,7 @@ const FilterSection = React.memo(function FilterSection(props) {
       }
     });
   }
-  const { isAuthenticated, accessToken, refreshToken, userId } = useSelector(
+  const { isAuthenticated, accessToken, refreshToken } = useSelector(
     (state) => state.auth
   ); 
   console.log(updatedSortOptions);
@@ -138,7 +130,9 @@ const FilterSection = React.memo(function FilterSection(props) {
     setCurrentPage(1);
   };
   const resetCategory = () => {
-    setSelectedCategories([]);
+    setSelectedCategories((prev)=> [...prev,[]]);
+    filters[0].options.forEach((cat,ind)=>cat.checked = false)
+    console.log(selectedCategories,filters[0].options)
   };
 
   const getCategories = async () => {
@@ -245,31 +239,6 @@ const FilterSection = React.memo(function FilterSection(props) {
     // categoryHandler(check, ind, secId)
   }, [currentPage, selectedCategories, sorts, searchText, searchParam]); //selectedCategories,currentPage
 
-  // useEffect(() => {
-
-  //   const queryParams = {};
-
-  //   if (selectedCategories.length > 0) {
-  //     queryParams.category = selectedCategories.join(',');
-  //   }
-
-  //   if (sorts.id) {
-  //     queryParams.sort = sorts.id;
-  //   }
-
-  //   if (currentPage) {
-  //     queryParams.page = currentPage;
-  //   }
-
-  //   const queryString = new URLSearchParams(queryParams).toString();
-
-  //   // Only update the URL if there are non-null parameters
-  //   if (queryString) {
-  //     navigate(`/allproducts?${queryString}`,{ replace: true });
-  //   }
-  // }, [location.search, selectedCategories, sorts.id, currentPage]);
-
-  // console.log(fileredProductList)
   return (
     <div className="bg-white">
       <div>
@@ -386,7 +355,10 @@ const FilterSection = React.memo(function FilterSection(props) {
                       </Disclosure>
                     ))}
                   </form>
+
+                  {/* <Button className="mt-4 border-gray-200" onClick={resetCategory}> Reset </Button> */}
                 </Dialog.Panel>
+
               </Transition.Child>
             </div>
           </Dialog>
