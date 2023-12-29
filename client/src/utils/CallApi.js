@@ -4,7 +4,7 @@ import axios from "axios";
 const AUTH_API = process.env.REACT_APP_AUTH_API;
 const PRODUCT_API = process.env.REACT_APP_PRODUCT_API;
 
-console.log(AUTH_API,PRODUCT_API )
+console.log(AUTH_API,PRODUCT_API,process.env.NODE_ENV)
 const config = {
   headers: {
     "Content-Type": "application/json",
