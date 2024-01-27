@@ -12,14 +12,13 @@ import RemoveLoginRoute from "./_helpers/removedLoginRoute";
 import AdminRoute from "./_helpers/adminRoute";
 import NewAdminForm from "./pages/AddNewAdmin";
 import { AdminProductList } from "./components/Dashboard/adminProductList";
-// import TestGetProduct from "./testApi/getProdujct";
+
 function App() {
-  console.log(process.env.REACT_APP_AUTH_API, process.env.REACT_APP_PRODUCT_API)
   return (
     <>
       <BrowserRouter>
         <Navbar />
-        {/* <TestGetProduct /> */}
+
         <Routes className="max-w-[1500px] m-auto">
           <Route exact path="/" element={<HomePage />} />
           <Route
