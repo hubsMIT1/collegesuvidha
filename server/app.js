@@ -14,9 +14,9 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
     path: "backend/config/.env",
   });
 }
+const app = express();
 const allowedOrigins = ["http://localhost:3000", "https://collegesuvidha.vercel.app"];
 
-const app = express();
 app.use(
   cors({
     origin: allowedOrigins,
@@ -24,19 +24,13 @@ app.use(
   })
 );
 
-// Handling uncaught Exception
-// process.on("uncaughtException", (err) => {
-//   console.log(`Error: ${err.message}`);
-//   console.log(`shutting down the server for handling uncaught exception`);
-// });
-
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.get("/", verifyAccessToken, async (req, res, next) => {
+app.get("/", (req, res, next) => {
   // console.log("home page");
-  res.send("home page");
+  res.send("Test Api working properly!!");
 });
 app.use("/auth", AuthRoute);
 
@@ -58,10 +52,10 @@ app.use((err, req, res, next) => {
     },
   });
 });
+
+
 process.on('uncaughtException', (error) => {
   console.error('Uncaught Exception:', error);
-  // Add any additional logging or error handling here
-
   // Restart the server
   process.exit(1); // 1 indicates an abnormal exit, which will trigger the nodemon to restart
 });
@@ -71,12 +65,4 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-// unhandled promise rejection
-// process.on("unhandledRejection", (err) => {
-//   console.log(`Shutting down the server for ${err.message}`);
-//   console.log(`shutting down the server for unhandle promise rejection`);
 
-//   server.close(() => {
-//     process.exit(1);
-//   });
-// });

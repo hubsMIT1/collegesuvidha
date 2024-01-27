@@ -93,7 +93,9 @@ function ProductForm(props) {
     // console.log(formData);
 
     await createProduct(formData, userId, accessToken, refreshToken, dispatch)
-      .then((res) => {})
+      .then((res) => {
+        navigate('/dashboard/productListing')
+      })
       .catch((error) => {
         console.error("Error creating product:", error);
       });

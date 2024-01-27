@@ -130,7 +130,7 @@ function CarouselCategory() {
           </Link>
         </SwiperSlide>
         <SwiperSlide>
-          <Link to={`allproducts?category=${encodeURIComponent("Others")}`}>
+          <Link to={`allproducts?category=${encodeURIComponent("Other")}`}>
             <img src={others} alt="" className="h-20"/>
             <div className="side-text relative  left-[25px] font-bold text-md">
               Other

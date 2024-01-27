@@ -89,7 +89,7 @@ const ProductList = (props) => {
           {props.viewBtn && (
             <Link to={`/allproducts`}>
               <div className="flex justify-center mt-5">
-                <Button className="ml-1 text-xs text-white xl:text-sm font-bold bg-cs-textHdClr ">
+                <Button className="ml-1 text-xs text-white xl:text-sm font-bold bg-[#7e22ce]">
                   Click to View More...
                 </Button>
               </div>
