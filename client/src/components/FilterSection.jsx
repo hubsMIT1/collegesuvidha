@@ -183,7 +183,7 @@ const FilterSection = React.memo(function FilterSection(props) {
         );
       }
       if (data.status === 200) {
-        // console.table(data.data.products)
+        console.table(data.data.products)
         setProductList(data.data.products);
         // console.log(data.data.totalPages);
         setTotalPage(data.data.totalPages);
