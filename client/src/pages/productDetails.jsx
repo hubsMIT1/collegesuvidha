@@ -80,7 +80,7 @@ const ProductDetails = (props) => {
 
   if (!products) {
     // You might want to show a loading state here
-    return <p>Loading...</p>;
+    return <p>Loading...(refresh if it takes more time)</p>;
   }
 
   return (

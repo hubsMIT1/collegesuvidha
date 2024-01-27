@@ -14,6 +14,7 @@ import NewAdminForm from "./pages/AddNewAdmin";
 import { AdminProductList } from "./components/Dashboard/adminProductList";
 // import TestGetProduct from "./testApi/getProdujct";
 function App() {
+  console.log(process.env.REACT_APP_AUTH_API, process.env.REACT_APP_PRODUCT_API)
   return (
     <>
       <BrowserRouter>
