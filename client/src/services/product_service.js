@@ -253,7 +253,7 @@ export const deleteProduct = async (
   dispatch
 ) => {
   try {
-    const response = await callProductApi.delete(`/${productId}`, {
+    const response = await callProductApi.delete(`/delete/${productId}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

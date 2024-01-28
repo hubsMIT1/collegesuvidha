@@ -351,7 +351,6 @@ const deleteProduct = async (req, res) => {
   try {
     const userId = req.payload.aud;
     const productId = req.params.id;
-    s;
     // Check if the product exists
     const existingProduct = await Product.findById(productId);
     if (!existingProduct) {
