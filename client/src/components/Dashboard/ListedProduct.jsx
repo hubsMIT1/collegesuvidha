@@ -15,7 +15,7 @@ import {
   Tooltip,
   Input,
 } from "@material-tailwind/react";
-import { getProductsByUserId } from "../../services/product_service";
+import { deleteProduct, getProductsByUserId } from "../../services/product_service";
 import { useDispatch, useSelector } from "react-redux";
 import Pagination from "../Pagination";
 import { format } from "date-fns";
@@ -53,6 +53,28 @@ export function ListedProduct() {
   useEffect(() => {
     setCurrentPage(currentPage);
   }, [currentPage]);
+
+  const handleDeleteProduct = async(id)=>{
+    await deleteProduct(
+      id,
+      userId,
+      accessToken,
+      refreshToken,
+      dispatch
+    )
+      .then((res) => {
+        if (res.status === 200) {
+          handleGetProducts();
+          console.log("Deleted successfully");
+        } else {
+          console.log(res?.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error updating product:", error?.message);
+      });
+  }
+
   const handleGetProducts = async () => {
     setLoading(true);
     // console.log("getProduts called")
@@ -85,10 +107,12 @@ export function ListedProduct() {
     handleGetProducts();
   }, [currentPage]); //selectedCategories,currentPage
   const navigate = useNavigate();
+
   const handleEditProduct = (product) => {
     const editUrl = `/addproduct?edit=${product?._id}`;
     navigate(editUrl, { state: { product } });
   };
+
   return (
     <Card className="h-full w-full">
       <CardHeader floated={false} shadow={false} className="rounded-none">
@@ -222,7 +246,7 @@ export function ListedProduct() {
                   </td>
                   <td className={classes}>
                     <Tooltip content="Delete Product">
-                      <IconButton variant="text">
+                      <IconButton variant="text" onClick={()=>handleDeleteProduct(product?._id)}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"

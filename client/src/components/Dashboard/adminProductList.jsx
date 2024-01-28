@@ -20,6 +20,7 @@ import {
   Input,
 } from "@material-tailwind/react";
 import {
+  deleteProduct,
   getProductsByUserId,
   updateProductStatus,
 } from "../../services/product_service";
@@ -106,7 +107,26 @@ export function AdminProductList() {
     isPublish: 0,
     isFeatured: false,
   });
-
+  const handleDeleteProduct = async(id)=>{
+    await deleteProduct(
+      id,
+      userId,
+      accessToken,
+      refreshToken,
+      dispatch
+    )
+      .then((res) => {
+        if (res.status === 200) {
+          handleGetProducts();
+          console.log("Deleted successfully");
+        } else {
+          console.log(res?.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error updating product:", error?.message);
+      });
+  }
   const handlePublishStatusChange = async (e, id) => {
     // const newPublishStatus = parseInt(event.target.value, 10);
     // console.log(e, editedProduct, id);
@@ -314,7 +334,7 @@ export function AdminProductList() {
                   </td>
                   <td className={classes}>
                     <Tooltip content="Delete Product">
-                      <IconButton variant="text">
+                      <IconButton variant="text" onClick={()=>handleDeleteProduct(product?._id)}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
