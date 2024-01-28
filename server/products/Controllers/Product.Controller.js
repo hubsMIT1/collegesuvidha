@@ -11,9 +11,7 @@ const createError = require("http-errors");
 const createProduct = async (req, res) => {
   try {
     const { error } = await validateProduct(req.body);
-    // console.log(error);
-    // console.log(req.body)
-    // console.log(req?.payload);
+    
     if (error) {
       return res
         .status(400)
@@ -23,13 +21,7 @@ const createProduct = async (req, res) => {
       req.body;
     const userId = req?.payload?.aud;
     const images = req.body?.imagess;
-    // console.log(req.body?.imagess)
-    // req.files.map((file) => {
-    //   const base64Image = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
-
-    //   return base64Image;
-    // });
-    // console.log(images)
+    
     const newProduct = new Product({
       title,
       description,
@@ -64,8 +56,7 @@ const getProducts = async (req, res) => {
     const pageSize = perPage ? Math.min(perPage, 18) : 18;
 
     const query = {};
-    // console.log(category,sortField,page)
-    // Apply category filter if provided and not 'undefined'
+   
     if (category !== "undefined") {
       const categoryFilter = category
         .split(",")
@@ -107,7 +98,7 @@ const getProducts = async (req, res) => {
     }
 
     let products;
-
+    console.log(query)
     // Check if there is no category or search text, then give the first 18 elements
     if (!Object.keys(query).length) {
       if (featured) {
@@ -249,7 +240,7 @@ const searchProducts = async (req, res) => {
       const regex = new RegExp(searchText, "i");
       query.$or = [{ title: regex }, { description: regex }];
     }
-
+    
     const totalProducts = await Product.countDocuments(query);
     const totalPages = Math.ceil(totalProducts / pageSize);
 
@@ -324,8 +315,7 @@ const updateProduct = async (req, res, next) => {
     const admin = await Admin.findOne({ adminId: userId });
 
     const isAdminId = admin ? true : false;
-    // console.log(existingProduct.userId.toString()===userId,isAdminId)
-    // Check if the user is the owner of the product
+    
     if (existingProduct.userId.toString() !== userId && !isAdminId) {
       return res
         .status(403)
@@ -342,12 +332,7 @@ const updateProduct = async (req, res, next) => {
       "imagess",
       "isAvailable",
     ];
-    // admin only can updated
-    // if(isAdminId){
-    //   allowedFields.push("isFeatured");
-    //   allowedFields.push("isPublish");
-    // }
-
+    
     allowedFields.forEach((field) => {
       if (req.body[field] !== undefined) {
         existingProduct[field] = req.body[field];

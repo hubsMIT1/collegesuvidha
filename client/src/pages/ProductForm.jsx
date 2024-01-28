@@ -94,6 +94,7 @@ function ProductForm(props) {
 
     await createProduct(formData, userId, accessToken, refreshToken, dispatch)
       .then((res) => {
+        console.log(res?.status, formData)
         navigate('/dashboard/productListing')
       })
       .catch((error) => {
@@ -206,7 +207,7 @@ function ProductForm(props) {
               >
                 <option value="">Select Category</option>
                 {categories?.map((category, index) => (
-                  <option key={index} value={category}>
+                  <option key={index} value={category.toLowerCase()}>
                     {category}
                   </option>
                 ))}

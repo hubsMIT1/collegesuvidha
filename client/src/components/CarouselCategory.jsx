@@ -8,6 +8,7 @@ import dumbbellIcon from "../assets/dumbbell-icon.png";
 import eleKettle from "../assets/ele-kettle.png";
 import labDress from "../assets/lab-dress-icon.png";
 import labShoes from "../assets/lab-shoes.png";
+import mattressIcon from '../assets/mattress-icon.png'
 import others from "../assets/others-icon.png";
 
 import {
@@ -72,7 +73,7 @@ function CarouselCategory() {
         className="flex ml-10"
       >
         <SwiperSlide className="ml-10" >
-          <Link to={`allproducts?category=${encodeURIComponent("Cycle")}`}>
+          <Link to={`allproducts?category=${encodeURIComponent("cycle")}`}>
             <img src={cycleIcon} title="Cycle" alt="" className="h-20" />
             <div className="side-text relative left-[25px] font-bold text-md ">
               Cycle
@@ -81,7 +82,7 @@ function CarouselCategory() {
         </SwiperSlide>
         <SwiperSlide>
           <Link
-            to={`allproducts?category==${encodeURIComponent("Calculator")}`}
+            to={`allproducts?category=${encodeURIComponent("calculator")}`}
           >
             <img src={calcuIcon} alt=""  className="h-20"/>
             <div className="side-text relative top-[0px] left-[10px] font-bold text-md">
@@ -90,7 +91,7 @@ function CarouselCategory() {
           </Link>
         </SwiperSlide>
         <SwiperSlide>
-          <Link to={`allproducts?category=${encodeURIComponent("Kettle")}`}>
+          <Link to={`allproducts?category=${encodeURIComponent("kettle")}`}>
             <img src={eleKettle} alt="" className="h-20"/>
             <div className="side-text relative  left-[25px] font-bold text-md">
               Kettle
@@ -98,7 +99,7 @@ function CarouselCategory() {
           </Link>
         </SwiperSlide>
         <SwiperSlide>
-          <Link to={`allproducts?category=${encodeURIComponent("Cooler")}`}>
+          <Link to={`allproducts?category=${encodeURIComponent("cooler")}`}>
             <img src={coolerIcon} alt="" className="h-20"/>
             <div className="side-text relative  left-[15px] font-bold text-md">
               Cooler
@@ -106,7 +107,7 @@ function CarouselCategory() {
           </Link>
         </SwiperSlide>
         <SwiperSlide>
-          <Link to={`allproducts?category=${encodeURIComponent("Lab Dress")}`}>
+          <Link to={`allproducts?category=${encodeURIComponent("lab dress")}`}>
             <img src={labDress} alt=""className="h-20" />
             <div className="side-text relative  left-[10px] font-bold text-md">
               Lab Dress
@@ -114,23 +115,24 @@ function CarouselCategory() {
           </Link>
         </SwiperSlide>
         <SwiperSlide>
-          <Link to={`allproducts?category=${encodeURIComponent("Lab Shoes")}`}>
+          <Link to={`allproducts?category=${encodeURIComponent("lab shoes")}`}>
             <img src={labShoes} alt="" className="h-20"/>
             <div className="side-text relative  left-[10px] font-bold text-md">
               Lab Shoes
             </div>
           </Link>
         </SwiperSlide>
+        
         <SwiperSlide>
-          <Link to={`allproducts?category=${encodeURIComponent("Dumb Bell")}`}>
-            <img src={dumbbellIcon} alt="" className="h-20"/>
+          <Link to={`allproducts?category=${encodeURIComponent("mattress")}`}>
+            <img src={mattressIcon} alt="" className="h-20"/>
             <div className="side-text relative  left-[10px] font-bold text-md">
-              Dumb Bell
+              Mattress
             </div>
           </Link>
         </SwiperSlide>
         <SwiperSlide>
-          <Link to={`allproducts?category=${encodeURIComponent("Other")}`}>
+          <Link to={`allproducts?category=${encodeURIComponent("other")}`}>
             <img src={others} alt="" className="h-20"/>
             <div className="side-text relative  left-[25px] font-bold text-md">
               Other

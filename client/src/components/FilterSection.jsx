@@ -7,7 +7,6 @@ import {
   MinusIcon,
   PlusIcon,
 } from "@heroicons/react/20/solid";
-import { Button } from "@material-tailwind/react";
 import ProductList from "./ProductList";
 import { getProducts, getProductsByUserId } from "../services/product_service";
 import { useDispatch, useSelector } from "react-redux";
@@ -64,7 +63,6 @@ function classNames(...classes) {
 const FilterSection = React.memo(function FilterSection(props) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [productList, setProductList] = useState([]);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -128,6 +126,7 @@ const FilterSection = React.memo(function FilterSection(props) {
     filters[0].options[ind].checked = !check;
     setCurrentPage(1);
   };
+
   const resetCategory = () => {
     setSelectedCategories((prev) => [...prev, []]);
     filters[0].options.forEach((cat, ind) => (cat.checked = false));
@@ -136,7 +135,6 @@ const FilterSection = React.memo(function FilterSection(props) {
 
   const getCategories = async () => {
     const data = categories;
-    // setCategories(data);
     const categoryOptions = data.map((cat) => ({
       value: cat,
       label: cat,
@@ -184,7 +182,7 @@ const FilterSection = React.memo(function FilterSection(props) {
       }
       if (data.status === 200) {
         // console.table(data.data.products)
-        setProductList(data.data.products);
+        // setProductList(data.data.products);
         // console.log(data.data.totalPages);
         setTotalPage(data.data.totalPages);
         setProductStore(data.data.products, dispatch);
@@ -220,7 +218,6 @@ const FilterSection = React.memo(function FilterSection(props) {
         if (queryString) {
           if (!props?.seller) navigate(`/allproducts?${queryString}`);
           else navigate(`/dashboard/your-products/${sellerId}?${queryString}`);
-
           getCategories();
         }
         // navigate(`/allproduct?category=${selectedCategories.join(',')}&sort=${sorts.id}&page=${currentPage}`);
@@ -236,7 +233,7 @@ const FilterSection = React.memo(function FilterSection(props) {
   useEffect(() => {
     handleGetProducts();
     // categoryHandler(check, ind, secId)
-  }, [currentPage, selectedCategories, sorts, searchText, searchParam]); //selectedCategories,currentPage
+  }, [selectedCategories, sorts, currentPage, searchParam, tempsearchtext, props?.seller, sellerId]); //selectedCategories,currentPage
 
   return (
     <div className="bg-white">
