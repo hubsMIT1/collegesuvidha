@@ -61,9 +61,10 @@ module.exports = {
       const refreshToken = await signRefreshToken(savedUser.id);
       const userId = savedUser.id
       res.clearCookie('refreshToken', { path: `/auth/refresh-token/${userId}` });
-      res.status(200)
-      .cookie('refreshToken', refreshToken,
-       {sameSite:'strict', httpOnly: false, path: `/auth/refresh-token/${userId}` })
+      // res.status(200)
+      // .cookie('refreshToken', refreshToken,
+      //  {sameSite:'strict', httpOnly: false, path: `/auth/refresh-token/${userId}` })
+      res.cookie('refreshToken', refreshToken, { sameSite: 'None', httpOnly: false, path: `/auth/refresh-token/${userId}` })
       .send({ accessToken, refreshToken, userId });
       // res.send(savedUser);
     } catch (error) {
@@ -92,9 +93,10 @@ module.exports = {
       if(isAdminId){
           ret.isAdmin = isAdminId;
       }
-      res.status(200)
-      .cookie('refreshToken', refreshToken,
-       {sameSite:'strict', httpOnly: false })
+      // res.status(200)
+      // .cookie('refreshToken', refreshToken,
+      //  {sameSite:'strict', httpOnly: false })
+      res.cookie('refreshToken', refreshToken, { sameSite: 'None', httpOnly: false })
       .send(ret);
 
     } catch (error) {

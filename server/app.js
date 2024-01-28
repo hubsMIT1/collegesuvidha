@@ -15,7 +15,7 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
   });
 }
 const app = express();
-const allowedOrigins = ["http://localhost:3000", "https://collegesuvidha.vercel.app"];
+const allowedOrigins = ["http://localhost:3000", "https://collegesuvidha.vercel.app","https://collegesuvidha.onrender.com"];
 
 app.use(
   cors({
